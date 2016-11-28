@@ -10,6 +10,15 @@ namespace scaling_microservices
     {
         static void Main(string[] args)
         {
+            var registry = new ServiceRegistry(10);
+            registry.Add("this !@#%");
+            Console.WriteLine(registry.Get().Count);
+            var timer = new System.Timers.Timer(20 * 1000) { Enabled = true, AutoReset = true };
+            timer.Elapsed += (sender, e) =>
+               {
+                   Console.WriteLine(registry.Get().Count);
+               };
+            Console.ReadLine();
         }
     }
 }

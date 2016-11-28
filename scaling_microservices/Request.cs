@@ -8,7 +8,7 @@ namespace scaling_microservices
         public string method { get; private set; }
         public Dictionary<string, string> args { get; private set; }
 
-        public Request(string request)
+        public __Request(string request)
         {
             args = new Dictionary<string, string>();
             request = request.ToLower();

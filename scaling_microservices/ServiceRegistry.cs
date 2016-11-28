@@ -19,8 +19,14 @@ namespace scaling_microservices
 
         private void RecalculateTimer()
         {
+            if(registry.Count == 0)
+            {
+                registerTimer.Enabled = false;
+                return;
+            }
             DateTime elapseTime = registry.Values.Min();
             candidates = registry.Keys.Where(x => registry[x] == elapseTime).ToList();
+            registerTimer.Enabled = true;
             registerTimer.Interval = elapseTime.Subtract(DateTime.Now).TotalMilliseconds;
         }
         
@@ -29,6 +35,7 @@ namespace scaling_microservices
         public ServiceRegistry(int timeoutInSeconds = 60) : base()
         {
             timeout = timeoutInSeconds;
+            registry = new Dictionary<string, DateTime>();
             candidates = new List<string>();
             registerTimer = new Timer() { AutoReset = true, Enabled = false };
             registerTimer.Elapsed += (object sender, ElapsedEventArgs e) =>
