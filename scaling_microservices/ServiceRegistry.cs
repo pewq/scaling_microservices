@@ -32,7 +32,7 @@ namespace scaling_microservices
         
         public int timeout { get; }
 
-        public ServiceRegistry(int timeoutInSeconds = 60) : base()
+        public ServiceRegistry(int timeoutInSeconds = ServiceRegistry.DefaultTimeout) : base()
         {
             timeout = timeoutInSeconds;
             registry = new Dictionary<string, DateTime>();
@@ -48,6 +48,7 @@ namespace scaling_microservices
             };
         }
 
+        public const int DefaultTimeout = 60;
 
         public void Add(string candidate)
         {
@@ -75,3 +76,13 @@ namespace scaling_microservices
 
     }
 }
+
+//example : 
+/*
+ * int timeout = 100;
+ * var registry = new ServiceRegistry(timeout);
+ * registry.Add("service-token");
+ * registry.Get().Count; // == 1
+ * Thread.Wait((timeout + 10) * 1000); //110 seconds;
+ * registry.Get().Count; // == 0
+ */
