@@ -36,10 +36,9 @@ namespace scaling_microservices.Controllers
         {
             try
             {
-
+                var request = new QueueRequest() { method = "get" };
                 channel.BasicPublish("", DiscoveryService.QueueName, qProps,
-                    System.Text.Encoding.UTF8.GetBytes(""));//convert json->string->bytes
-                //access to discovery service via Rabbitmq
+                    request.ToByteArray());
                 //recieve reply from service
                 //create response
                 return new List<string>(){ };
