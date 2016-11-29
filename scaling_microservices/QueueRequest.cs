@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace scaling_microservices
 {
     [Serializable]
-    class QueueRequest
+    public class QueueRequest
     {
         public string method { get; set; }
 
