@@ -23,7 +23,7 @@ namespace scaling_microservices
         }
         public void Stop()
         {
-            thread.Interrupt();
+            thread.Abort();
         }
         public IService(IConnection _connection, IModel _model, string queueName)
         {
