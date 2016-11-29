@@ -1,12 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
 
 namespace scaling_microservices
 {
+    [Serializable]
     class QueueRequest
     {
-        public string method { get; private set; }
+        public string method { get; set; }
 
         public void SetMethod(string method)
         {
@@ -27,6 +31,32 @@ namespace scaling_microservices
         public QueueRequest()
         {
             arguments = new Dictionary<string, string>();
+        }
+        public QueueRequest(byte[] bytes)
+        {
+            var formatter = new BinaryFormatter();
+            using (var ms = new MemoryStream())
+            {
+                ms.Write(bytes, 0, bytes.Length);
+                ms.Seek(0, SeekOrigin.Begin);
+                var obj = formatter.Deserialize(ms) as QueueRequest;
+                this.method = obj.method;
+                this.arguments = obj.arguments.ToDictionary(x=> x.Key, x=> x.Value);
+            }
+        }
+        public byte[] ToByteArray()
+        {
+            var formatter = new BinaryFormatter();
+            using (var ms = new MemoryStream())
+            {
+                formatter.Serialize(ms, this);
+                return ms.ToArray();
+            }
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }
