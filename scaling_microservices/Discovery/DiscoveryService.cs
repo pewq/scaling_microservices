@@ -45,40 +45,48 @@ namespace scaling_microservices
                     replyAddr = message.BasicProperties.ReplyToAddress,
                     correlationId = message.BasicProperties.CorrelationId,
                 };
-                var response = this.ProcessRequest(message.Body.ToString());
+                var response = this.ProcessRequest(new QueueRequest(message.Body));
                 //reply using responseArguments and response
                 subscription.Ack();
             }
         }
-
-        /// <summary>processes requestString and returns
-        /// JSON encoded response</summary>
-        /// <returns>JSON encoded response</returns>
-        protected override string ProcessRequest(string requestString)
+        protected override string ProcessRequest(QueueRequest request)
         {
-            var request = HttpUtility.ParseQueryString(requestString);
-            
-            string method = request.Get("method");
+            string method = request.method;
             switch(method)
             {
                 case "get":
                     {
                         var response = new
                         {
-                            response="success",
+                            response = "success",
                             services = registry.GetServices()
                         };
                         return JsonConvert.SerializeObject(response);
                     }
                 case "ping":
                     {
-                        registry.Add(request.Get("name"));
-                        var response = new
+                        try
                         {
-                            response = "success",
-                            message = "registered"
-                        };
-                        return JsonConvert.SerializeObject(response);
+                            registry.Add(request.arguments["name"]);
+                            var response = new
+                            {
+                                response = "success",
+                                message = "registered"
+                            };
+                            return JsonConvert.SerializeObject(response);
+
+                        }
+                        catch (Exception)
+                        {
+                            var response = new
+                            {
+                                response = "error",
+                                message = "no parameter 'name' provided"
+                            };
+                            return JsonConvert.SerializeObject(response);
+                        }
+                        
                     }
                 default:
                     {
