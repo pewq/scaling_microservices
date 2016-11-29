@@ -33,8 +33,10 @@ namespace scaling_microservices
         }
         public IService(string queueName, string port)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost", Port = int.Parse(port) };
-            using (var conn = factory.CreateConnection())
+            //port change prohibited
+            var factory = new ConnectionFactory() { HostName = "localhost"/*, Port = int.Parse(port)*/ };
+            var conn = factory.CreateConnection();
+            
             {
                 var model = conn.CreateModel();
                 model.QueueDeclare(queueName, false, false, false, null);
