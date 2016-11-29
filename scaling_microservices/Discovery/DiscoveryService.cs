@@ -9,8 +9,6 @@ namespace scaling_microservices
     /// <note>singleton Instance, listens to queue with @QueueName</note>
     class DiscoveryService : IService
     {
-        public static DiscoveryService Instance { get; private set; }
-        public const string QueueName = "DiscoveryCommandQueue";
         private ServiceRegistry registry;
         private DiscoveryService(IConnection _connection, IModel _model, string _queueName) :
             base(_connection, _model, _queueName)
@@ -18,17 +16,19 @@ namespace scaling_microservices
             registry = new ServiceRegistry();
         }
 
-        private DiscoveryService(string queueName,string port) :
-            base(queueName, port)
-        {
-            registry = new ServiceRegistry();
-        }
+        private DiscoveryService(string queueName, string port) 
+            : this(queueName, int.Parse(port))
+        { }
         private DiscoveryService(string queueName, int port) :
             base(queueName, port.ToString())
         {
+            this.Port = port;
             registry = new ServiceRegistry();
         }
 
+        public int Port { get; private set; }
+        public static DiscoveryService Instance { get; private set; }
+        public const string QueueName = "DiscoveryCommandQueue";
         static DiscoveryService()
         {
             Instance = new DiscoveryService(QueueName, 9090);
@@ -47,6 +47,7 @@ namespace scaling_microservices
                 };
                 var response = this.ProcessRequest(message.Body.ToString());
                 //reply using responseArguments and response
+                subscription.Ack();
             }
         }
 
