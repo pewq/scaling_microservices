@@ -6,37 +6,38 @@ using System.Web.Http;
 using RabbitMQ.Client;
 using RabbitMQ.Client.MessagePatterns;
 
-namespace scaling_microservices.Discovery
+namespace scaling_microservices.Controllers
 {
-    class DiscoveryController : ApiController
+    public class DiscoveryController : ApiController
     {
         IConnection serviceConnection;
-        IModel model;
+        IModel channel;
         QueueDeclareOk responseQueue;
         IBasicProperties qProps;
         DiscoveryController()
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost",
-                Port = DiscoveryService.Instance.Port
-            };
-
+                factory.HostName = "localhost"
+            }
+            //port change prohibited
+            //factory.Port = DiscoveryService.Instance.Port;
             serviceConnection = factory.CreateConnection();
-            model = serviceConnection.CreateModel();
-            responseQueue = model.QueueDeclare();
-            qProps = model.CreateBasicProperties();
+            channel = serviceConnection.CreateModel();
+            responseQueue = channel.QueueDeclare();
+            qProps = channel.CreateBasicProperties();
             qProps.ReplyTo = responseQueue.QueueName;
         }
 
 
         [HttpGet]
+        [ActionName("services")]
         public IEnumerable<string> Services()
         {
             try
             {
 
-                model.BasicPublish("", DiscoveryService.QueueName, qProps,
+                channel.BasicPublish("", DiscoveryService.QueueName, qProps,
                     System.Text.Encoding.UTF8.GetBytes(""));//convert json->string->bytes
                 //access to discovery service via Rabbitmq
                 //recieve reply from service
@@ -50,6 +51,7 @@ namespace scaling_microservices.Discovery
         }
 
         [HttpGet]
+        [ActionName("data")]
         public IEnumerable<KeyValuePair<string,DateTime>> Data()
         {
             try
@@ -64,6 +66,7 @@ namespace scaling_microservices.Discovery
         }
 
         [HttpPost]
+        [ActionName("ping")]
         public HttpResponseMessage Ping([FromUri] string id)
         {
             try
