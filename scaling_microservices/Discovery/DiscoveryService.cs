@@ -6,21 +6,53 @@ using Newtonsoft.Json;
 
 namespace scaling_microservices
 {
+    /// <note>singleton Instance, listens to queue with @QueueName</note>
     class DiscoveryService : IService
     {
-        ServiceRegistry registry;
-
-        public DiscoveryService(IConnection _connection, IModel _model, string _queueName) :
+        public static DiscoveryService Instance { get; private set; }
+        public const string QueueName = "DiscoveryCommandQueue";
+        private ServiceRegistry registry;
+        private DiscoveryService(IConnection _connection, IModel _model, string _queueName) :
             base(_connection, _model, _queueName)
         {
             registry = new ServiceRegistry();
         }
 
-        protected override void ThreadFunction()
+        private DiscoveryService(string queueName,string port) :
+            base(queueName, port)
         {
-            throw new NotImplementedException();
+            registry = new ServiceRegistry();
+        }
+        private DiscoveryService(string queueName, int port) :
+            base(queueName, port.ToString())
+        {
+            registry = new ServiceRegistry();
         }
 
+        static DiscoveryService()
+        {
+            Instance = new DiscoveryService(QueueName, 9090);
+        }
+
+        protected override void ThreadFunction()
+        {
+            while(true)
+            {
+                var message = this.subscription.Next();
+                var responseArguments = new
+                {
+                    replyQueue = message.BasicProperties.ReplyTo,
+                    replyAddr = message.BasicProperties.ReplyToAddress,
+                    correlationId = message.BasicProperties.CorrelationId,
+                };
+                var response = this.ProcessRequest(message.Body.ToString());
+                //reply using responseArguments and response
+            }
+        }
+
+        /// <summary>processes requestString and returns
+        /// JSON encoded response</summary>
+        /// <returns>JSON encoded response</returns>
         protected override string ProcessRequest(string requestString)
         {
             var request = HttpUtility.ParseQueryString(requestString);

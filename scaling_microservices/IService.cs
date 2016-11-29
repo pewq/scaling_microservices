@@ -5,6 +5,9 @@ using System.Web.Http;
 
 namespace scaling_microservices
 {
+    /// <summary>
+    /// provides subscription to ancestor classes
+    /// </summary>
     public abstract class IService : ApiController
     {
         protected string connectionString;//database connection string

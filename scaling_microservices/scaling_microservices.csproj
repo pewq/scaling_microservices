@@ -65,7 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DIscoveryService.cs" />
+    <Compile Include="Discovery\DiscoveryService.cs" />
     <Compile Include="Discovery\DiscoveryController.cs" />
     <Compile Include="IService.cs" />
     <Compile Include="Program.cs" />
