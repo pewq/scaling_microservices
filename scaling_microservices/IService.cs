@@ -1,10 +1,11 @@
 ﻿using System.Threading;
 using RabbitMQ.Client;
 using RabbitMQ.Client.MessagePatterns;
+using System.Web.Http;
 
 namespace scaling_microservices
 {
-    public abstract class IService
+    public abstract class IService : ApiController
     {
         protected string connectionString;//database connection string
         protected IConnection connection;
