@@ -6,7 +6,7 @@ namespace scaling_microservices
 {
     public abstract class IService
     {
-        protected string connectionString;
+        protected string connectionString;//database connection string
         protected IConnection connection;
         protected IModel channel;
         protected Subscription subscription;
@@ -27,6 +27,17 @@ namespace scaling_microservices
             connection = _connection;
             channel = _model;
             subscription = new Subscription(channel, queueName);
+        }
+        public IService(string queueName, string port)
+        {
+            var factory = new ConnectionFactory() { HostName = "localhost", Port = int.Parse(port) };
+            using (var conn = factory.CreateConnection())
+            {
+                var model = conn.CreateModel();
+                model.QueueDeclare(queueName, false, false, false, null);
+
+                subscription = new Subscription(conn.CreateModel(), );
+            }
         }
     }
 }

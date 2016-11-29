@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.SelfHost;
 
 namespace scaling_microservices
 {
@@ -10,15 +12,11 @@ namespace scaling_microservices
     {
         static void Main(string[] args)
         {
-            var registry = new ServiceRegistry(10);
-            registry.Add("this !@#%");
-            Console.WriteLine(registry.Get().Count);
-            var timer = new System.Timers.Timer(20 * 1000) { Enabled = true, AutoReset = true };
-            timer.Elapsed += (sender, e) =>
-               {
-                   Console.WriteLine(registry.Get().Count);
-               };
-            Console.ReadLine();
+            var config = new HttpSelfHostConfiguration("http://localhost:9090");
+
+            config.Routes.MapHttpRoute(
+                "Default", "{controller}/id", new { id = RouteParameter.Optional }
+                );
         }
     }
 }
