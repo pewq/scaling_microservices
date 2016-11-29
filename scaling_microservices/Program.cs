@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.SelfHost;
-
+﻿using Microsoft.Owin.Hosting;
+using System;
+using System.Net.Http;
+using RabbitMQ.Client;
+using RabbitMQ.Client.MessagePatterns;
 namespace scaling_microservices
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var config = new HttpSelfHostConfiguration("http://localhost:9090");
+            DiscoveryService.Nothing();
+            var baseAddr = "http://localhost:8080";
+            using (WebApp.Start<Startup>(baseAddr))
+            {
 
-            config.Routes.MapHttpRoute(
-                "Default", "{controller}/id", new { id = RouteParameter.Optional }
-                );
+                Console.WriteLine("press enter");
+                Console.ReadLine();
+            }
+
         }
     }
 }
