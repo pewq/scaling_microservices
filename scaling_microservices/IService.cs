@@ -36,7 +36,7 @@ namespace scaling_microservices
                 var model = conn.CreateModel();
                 model.QueueDeclare(queueName, false, false, false, null);
 
-                subscription = new Subscription(conn.CreateModel(), );
+                subscription = new Subscription(conn.CreateModel(), queueName);
             }
         }
     }
