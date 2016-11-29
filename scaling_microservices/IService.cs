@@ -15,7 +15,7 @@ namespace scaling_microservices
         protected Subscription subscription;
         protected Thread thread;
         protected abstract void ThreadFunction();
-        protected abstract string ProcessRequest(string request);
+        protected abstract string ProcessRequest(QueueRequest request);
         public void Start()
         {
             thread = new Thread(ThreadFunction);
