@@ -18,8 +18,8 @@ namespace scaling_microservices.Controllers
         {
             var factory = new ConnectionFactory()
             {
-                factory.HostName = "localhost"
-            }
+                HostName = "localhost"
+            };
             //port change prohibited
             //factory.Port = DiscoveryService.Instance.Port;
             serviceConnection = factory.CreateConnection();
