@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using RabbitMQ.Client.MessagePatterns;
 
 namespace scaling_microservices.Controllers
@@ -13,7 +14,6 @@ namespace scaling_microservices.Controllers
         IConnection serviceConnection;
         IModel channel;
         QueueDeclareOk responseQueue;
-        IBasicProperties qProps;
         DiscoveryController()
         {
             var factory = new ConnectionFactory()
@@ -25,8 +25,6 @@ namespace scaling_microservices.Controllers
             serviceConnection = factory.CreateConnection();
             channel = serviceConnection.CreateModel();
             responseQueue = channel.QueueDeclare();
-            qProps = channel.CreateBasicProperties();
-            qProps.ReplyTo = responseQueue.QueueName;
         }
 
 
@@ -37,10 +35,14 @@ namespace scaling_microservices.Controllers
             try
             {
                 var request = new QueueRequest() { method = "get" };
-                channel.BasicPublish("", DiscoveryService.QueueName, qProps,
+                var props = IService.CreateBasicProperties(channel, responseQueue.QueueName);
+                channel.BasicPublish("", DiscoveryService.QueueName, props,
                     request.ToByteArray());
-                //recieve reply from service
-                //create response
+                QueueingBasicConsumer consumer = new QueueingBasicConsumer(channel);
+                channel.BasicConsume(responseQueue.QueueName, false, consumer);
+                BasicDeliverEventArgs ea = consumer.Queue.Dequeue() as BasicDeliverEventArgs;
+                var body = ea.Body;
+                channel.BasicAck(ea.DeliveryTag, false);
                 return new List<string>(){ };
             }
             catch(/*timeout*/Exception)
