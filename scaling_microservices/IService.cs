@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using RabbitMQ.Client;
 using RabbitMQ.Client.MessagePatterns;
 
@@ -43,6 +44,18 @@ namespace scaling_microservices
 
                 subscription = new Subscription(conn.CreateModel(), queueName);
             }
+        }
+
+        public static IBasicProperties CreateBasicProperties(IModel channel, string responseQueue, string address = "")
+        {
+            var props = channel.CreateBasicProperties();
+            props.CorrelationId = Guid.NewGuid().ToString();
+            props.ReplyTo = responseQueue;
+            if(address != "")
+            {
+                //set props.ReplyToAddress
+            }
+            return props;
         }
     }
 }
