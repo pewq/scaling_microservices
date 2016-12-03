@@ -36,13 +36,13 @@ namespace scaling_microservices
         {
             //port change prohibited
             var factory = new ConnectionFactory() { HostName = "localhost"/*, Port = int.Parse(port)*/ };
-            var conn = factory.CreateConnection();
+            connection = factory.CreateConnection();
             
             {
-                var model = conn.CreateModel();
-                model.QueueDeclare(queueName, false, false, false, null);
+                channel = connection.CreateModel();
+                channel.QueueDeclare(queueName, false, false, false, null);
 
-                subscription = new Subscription(conn.CreateModel(), queueName);
+                subscription = new Subscription(connection.CreateModel(), queueName);
             }
         }
 
