@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -6,6 +7,7 @@ using System.Web.Http;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.MessagePatterns;
+using Newtonsoft.Json;
 
 namespace scaling_microservices.Controllers
 {
@@ -25,12 +27,13 @@ namespace scaling_microservices.Controllers
             serviceConnection = factory.CreateConnection();
             channel = serviceConnection.CreateModel();
             responseQueue = channel.QueueDeclare();
+            
         }
 
 
         [HttpGet]
         [ActionName("services")]
-        public IEnumerable<string> Services()
+        public IHttpActionResult Services()
         {
             try
             {
@@ -41,13 +44,13 @@ namespace scaling_microservices.Controllers
                 QueueingBasicConsumer consumer = new QueueingBasicConsumer(channel);
                 channel.BasicConsume(responseQueue.QueueName, false, consumer);
                 BasicDeliverEventArgs ea = consumer.Queue.Dequeue() as BasicDeliverEventArgs;
-                var body = ea.Body;
+                var body = Encoding.UTF8.GetString(ea.Body, 0, ea.Body.Length);
                 channel.BasicAck(ea.DeliveryTag, false);
-                return new List<string>(){ };
+                return Json(JsonConvert.DeserializeObject(body));
             }
-            catch(/*timeout*/Exception)
+            catch(Exception e)
             {
-                return new List<string>() { };
+                return new System.Web.Http.Results.ExceptionResult(e, this);
             }
         }
 

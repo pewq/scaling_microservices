@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RabbitMQ.Client;
 using System.Web;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace scaling_microservices
@@ -24,6 +25,7 @@ namespace scaling_microservices
         {
             this.Port = port;
             registry = new ServiceRegistry();
+            this.Start();
         }
 
         public int Port { get; private set; }
@@ -39,6 +41,7 @@ namespace scaling_microservices
             while(true)
             {
                 var message = this.subscription.Next();
+                subscription.Ack();
                 var responseArguments = new
                 {
                     replyQueue = message.BasicProperties.ReplyTo,
@@ -46,8 +49,11 @@ namespace scaling_microservices
                     correlationId = message.BasicProperties.CorrelationId,
                 };
                 var response = this.ProcessRequest(new QueueRequest(message.Body));
-                //reply using responseArguments and response
-                subscription.Ack();
+                channel.BasicPublish("",
+                    responseArguments.replyQueue,
+                    message.BasicProperties,
+                    Encoding.UTF8.GetBytes(response));
+                
             }
         }
         protected override string ProcessRequest(QueueRequest request)
