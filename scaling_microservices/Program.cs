@@ -9,6 +9,7 @@ namespace scaling_microservices
     {
         static void Main(string[] args)
         {
+            DiscoveryService.Instance.Start();
             var baseAddr = "http://localhost:8080";
             using (WebApp.Start<Startup>(baseAddr))
             {
