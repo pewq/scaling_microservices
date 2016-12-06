@@ -40,20 +40,16 @@ namespace scaling_microservices
         {
             while(true)
             {
-                var message = this.subscription.Next();
-                subscription.Ack();
-                var responseArguments = new
+                var message = endpoint.Recieve();
+                if(message.Encoding == typeof(QueueRequest).ToString())
                 {
-                    replyQueue = message.BasicProperties.ReplyTo,
-                    replyAddr = message.BasicProperties.ReplyToAddress,
-                    correlationId = message.BasicProperties.CorrelationId,
-                };
-                var response = this.ProcessRequest(new QueueRequest(message.Body));
-                channel.BasicPublish("",
-                    responseArguments.replyQueue,
-                    message.BasicProperties,
-                    Encoding.UTF8.GetBytes(response));
-                
+                    var request = new QueueRequest(message.body);
+                    var response = this.ProcessRequest(request);
+                    var msg = new RabbitEndpoint.Message();
+                    msg.properties = endpoint.CreateBasicProperties(message);
+                    msg.StringBody = response;
+                    endpoint.SendTo(msg, message.properties.ReplyTo);
+                }
             }
         }
         protected override string ProcessRequest(QueueRequest request)
