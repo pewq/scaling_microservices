@@ -88,12 +88,35 @@ namespace scaling_microservices
                         }
                         
                     }
+                case "send_message":
+                    {
+                        try
+                        {
+                            Console.WriteLine(request.arguments["message"]);
+                            var response = new
+                            {
+                                response = "success",
+                                message = "message sent"
+                            };
+                            return JsonConvert.SerializeObject(response);
+
+                        }
+                        catch (Exception)
+                        {
+                            var response = new
+                            {
+                                error = "error",
+                                message = "no parameter 'message' provided"
+                            };
+                            return JsonConvert.SerializeObject(response);
+                        }
+                    }
                 default:
                     {
                         var response = new
                         {
                             response = "error",
-                            message = "unknown method. available methods: get, ping",
+                            message = "unknown method. available methods: get, ping, send_message",
                         };
                         return JsonConvert.SerializeObject(response);
                     }
