@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace scaling_microservices
 {
     /// <note>singleton Instance, listens to queue with @QueueName</note>
-    class DiscoveryService : IService
+    public class DiscoveryService : IService
     {
         private ServiceRegistry registry;
 
@@ -44,8 +44,7 @@ namespace scaling_microservices
                 {
                     var request = new QueueRequest(message.body);
                     var response = this.ProcessRequest(request);
-                    var msg = new RabbitEndpoint.Message();
-                    msg.properties = endpoint.CreateBasicProperties(message);
+                    var msg = new Message() { properties = endpoint.CreateBasicProperties(message) };
                     msg.StringBody = response;
                     endpoint.SendTo(msg, message.properties.ReplyTo);
                 }
