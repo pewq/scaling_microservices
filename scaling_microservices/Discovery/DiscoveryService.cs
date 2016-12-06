@@ -83,7 +83,7 @@ namespace scaling_microservices
                         {
                             var response = new
                             {
-                                response = "error",
+                                error = "error",
                                 message = "no parameter 'name' provided"
                             };
                             return JsonConvert.SerializeObject(response);
