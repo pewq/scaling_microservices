@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Net.Http;
 using System.Web.Http;
 using RabbitMQ.Client;
@@ -44,33 +45,43 @@ namespace scaling_microservices.Controllers
 
         [HttpGet]
         [ActionName("data")]
-        public IEnumerable<KeyValuePair<string,DateTime>> Data()
+        public IHttpActionResult Data()
         {
             try
             {
-                //access to discovery
-                return new List<KeyValuePair<string, DateTime>> { };
+                var request = new QueueRequest() { method = "data" };
+                endpoint.SendTo(request, DiscoveryService.QueueName);
+                var serviceResponse = endpoint.Recieve();
+                return Json(JsonConvert.DeserializeObject(serviceResponse.StringBody));
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return new List<KeyValuePair<string, DateTime>> { };
+                return new System.Web.Http.Results.ExceptionResult(e, this);
             }
         }
 
         [HttpPost]
         [ActionName("ping")]
-        public HttpResponseMessage Ping([FromUri] string id)
+        public IHttpActionResult Ping([FromUri] string id)
         {
             try
             {
+                var request = new QueueRequest() { method = "ping" };
+                request.arguments.Add("name", id);
+                endpoint.SendTo(request, DiscoveryService.QueueName);
+                var endpResponse = JsonConvert.DeserializeObject(endpoint.Recieve().StringBody);
+                if(endpResponse.GetType().GetField("error") != null)
+                {
+                    throw new Exception(endpResponse.GetType().GetField("message").GetValue(endpResponse).ToString());
+                }
                 //Access discovery service
-                return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
+                return new System.Web.Http.Results.StatusCodeResult(System.Net.HttpStatusCode.OK, this);
             }
-            catch(Exception)
+            catch(Exception e)
             {
                 //do nothing really
                 //prop: try to restart service
-                return new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
+                return new System.Web.Http.Results.ExceptionResult(e, this);
             }
         }
     }
