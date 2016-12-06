@@ -102,9 +102,7 @@ namespace scaling_microservices
 
         public void Send(Message msg)
         {
-            var props = channel.CreateBasicProperties();
-            props.ReplyTo = msg.properties.ReplyTo;
-            props.CorrelationId = msg.CorrelationId;
+            var props = CreateBasicProperties(msg);
             props.ContentEncoding = msg.Encoding;
             channel.BasicPublish("", msg.properties.ReplyTo, props, msg.body);
         }
@@ -112,22 +110,21 @@ namespace scaling_microservices
 
         public void SendTo(Message msg, string toQName)
         {
-            var properties = channel.CreateBasicProperties();
-            properties.ReplyTo = InQueue;
-            properties.CorrelationId = Guid.NewGuid().ToString();
+            var properties = CreateBasicProperties();
             properties.ContentEncoding = msg.Encoding;
             channel.BasicPublish("", toQName, properties, msg.body);
         }
         
         public void SendTo(QueueRequest request, string toQName)
         {
-            var properties = channel.CreateBasicProperties();
-            properties.ReplyTo = InQueue;
-            properties.CorrelationId = Guid.NewGuid().ToString();
+            var properties = CreateBasicProperties();
             properties.ContentEncoding = "QueueRequest";
             channel.BasicPublish("", toQName, properties, request.ToByteArray());
         }
 
+        /// <summary>
+        /// Creates basic properties with correlationId from msg
+        /// </summary>
         public IBasicProperties CreateBasicProperties(Message msg)
         {
             var props = channel.CreateBasicProperties();
@@ -136,7 +133,7 @@ namespace scaling_microservices
         }
 
         /// <summary>
-        /// Creates basic properties with new CorrelationID and set ReplyTo
+        /// Creates basic properties with new CorrelationID and set ReplyTo to this.InQueue
         /// </summary>
         public IBasicProperties CreateBasicProperties()
         {
