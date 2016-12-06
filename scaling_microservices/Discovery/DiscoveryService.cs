@@ -11,12 +11,11 @@ namespace scaling_microservices
     class DiscoveryService : IService
     {
         private ServiceRegistry registry;
-        private DiscoveryService(IConnection _connection, IModel _model, string _queueName) :
-            base(_connection, _model, _queueName)
-        {
-            registry = new ServiceRegistry();
-        }
 
+        private DiscoveryService(string queueName) : base(queueName)
+        {
+            this.registry = new ServiceRegistry();
+        }
         private DiscoveryService(string queueName, string port) 
             : this(queueName, int.Parse(port))
         { }
@@ -33,7 +32,7 @@ namespace scaling_microservices
         public const string QueueName = "DiscoveryCommandQueue";
         static DiscoveryService()
         {
-            Instance = new DiscoveryService(QueueName, 9090);
+            Instance = new DiscoveryService(QueueName);
         }
 
         protected override void ThreadFunction()
