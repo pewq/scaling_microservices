@@ -33,8 +33,13 @@ namespace scaling_microservices
                                 return System.Text.Encoding.Unicode.GetString(body);
                             }
                         default:
-                            return "";
+                            throw new Exception("Invalid Encoding");
                     }
+                }
+                set
+                {
+                    properties.ContentEncoding = "UTF8";
+                    body = System.Text.Encoding.UTF8.GetBytes(value);
                 }               
             }
             
@@ -118,7 +123,7 @@ namespace scaling_microservices
         public void SendTo(QueueRequest request, string toQName)
         {
             var properties = CreateBasicProperties();
-            properties.ContentEncoding = "QueueRequest";
+            properties.ContentEncoding = typeof(QueueRequest).ToString();
             channel.BasicPublish("", toQName, properties, request.ToByteArray());
         }
 
