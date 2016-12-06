@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace client_service
 {
@@ -10,6 +10,9 @@ namespace client_service
     {
         static void Main(string[] args)
         {
+            var service = new ClientService();
+            service.Start();
+            Thread.Sleep(-1);
         }
     }
 }
