@@ -24,7 +24,7 @@ namespace scaling_microservices
         {
             thread.Abort();
         }
-        public IService(IConnection _connection, IModel _model, string queueName)
+        public IService(string queueName)
         {
             endpoint = new RabbitEndpoint(/*_connection , _model,*/ queueName);
         }
