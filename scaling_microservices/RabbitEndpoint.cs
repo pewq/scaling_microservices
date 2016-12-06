@@ -84,6 +84,16 @@ namespace scaling_microservices
             subscription = new Subscription(channel, inQName);
         }
 
+        public RabbitEndpoint(string host, int port, string inQname)
+        {
+            InQueue = inQname;
+            var factory = new ConnectionFactory() { HostName = host/*, Port = port*/};
+            connection = factory.CreateConnection();
+            channel = connection.CreateModel();
+            var queue = channel.QueueDeclare(queue: inQname);
+            subscription = new Subscription(channel, inQname);
+        }
+
         public Message Recieve()
         {
             var msg = subscription.Next();
@@ -116,6 +126,24 @@ namespace scaling_microservices
             properties.CorrelationId = Guid.NewGuid().ToString();
             properties.ContentEncoding = "QueueRequest";
             channel.BasicPublish("", toQName, properties, request.ToByteArray());
+        }
+
+        public IBasicProperties CreateBasicProperties(Message msg)
+        {
+            var props = channel.CreateBasicProperties();
+            props.CorrelationId = msg.CorrelationId;
+            return props;
+        }
+
+        /// <summary>
+        /// Creates basic properties with new CorrelationID and set ReplyTo
+        /// </summary>
+        public IBasicProperties CreateBasicProperties()
+        {
+            var props = channel.CreateBasicProperties();
+            props.CorrelationId = Guid.NewGuid().ToString();
+            props.ReplyTo = InQueue;
+            return props;
         }
     }
 }

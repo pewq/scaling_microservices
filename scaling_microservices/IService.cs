@@ -28,30 +28,9 @@ namespace scaling_microservices
         {
             endpoint = new RabbitEndpoint(/*_connection , _model,*/ queueName);
         }
-        //public IService(string queueName, string port)
-        //{
-        //    //port change prohibited
-        //    var factory = new ConnectionFactory() { HostName = "localhost"/*, Port = int.Parse(port)*/ };
-        //    connection = factory.CreateConnection();
-            
-        //    {
-        //        channel = connection.CreateModel();
-        //        channel.QueueDeclare(queueName, false, false, false, null);
-
-        //        subscription = new Subscription(connection.CreateModel(), queueName);
-        //    }
-        //}
-
-        public static IBasicProperties CreateBasicProperties(IModel channel, string responseQueue, string address = "")
+        public IService(string queueName, string port)
         {
-            var props = channel.CreateBasicProperties();
-            props.CorrelationId = Guid.NewGuid().ToString();
-            props.ReplyTo = responseQueue;
-            if(address != "")
-            {
-                //set props.ReplyToAddress
-            }
-            return props;
+            endpoint = new RabbitEndpoint("localhost", int.Parse(port), queueName);
         }
     }
 }
