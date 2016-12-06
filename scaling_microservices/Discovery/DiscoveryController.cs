@@ -13,21 +13,15 @@ namespace scaling_microservices.Controllers
 {
     public class DiscoveryController : ApiController
     {
-        IConnection serviceConnection;
-        IModel channel;
-        QueueDeclareOk responseQueue;
+        RabbitEndpoint endpoint;
         DiscoveryController()
         {
             var factory = new ConnectionFactory()
             {
                 HostName = "localhost"
             };
-            //port change prohibited
-            //factory.Port = DiscoveryService.Instance.Port;
-            serviceConnection = factory.CreateConnection();
-            channel = serviceConnection.CreateModel();
-            responseQueue = channel.QueueDeclare();
-            
+
+            endpoint = new RabbitEndpoint();
         }
 
 
@@ -38,15 +32,9 @@ namespace scaling_microservices.Controllers
             try
             {
                 var request = new QueueRequest() { method = "get" };
-                var props = IService.CreateBasicProperties(channel, responseQueue.QueueName);
-                channel.BasicPublish("", DiscoveryService.QueueName, props,
-                    request.ToByteArray());
-                QueueingBasicConsumer consumer = new QueueingBasicConsumer(channel);
-                channel.BasicConsume(responseQueue.QueueName, false, consumer);
-                BasicDeliverEventArgs ea = consumer.Queue.Dequeue() as BasicDeliverEventArgs;
-                var body = Encoding.UTF8.GetString(ea.Body, 0, ea.Body.Length);
-                channel.BasicAck(ea.DeliveryTag, false);
-                return Json(JsonConvert.DeserializeObject(body));
+                endpoint.SendTo(request, DiscoveryService.QueueName);
+                var serviceResponse = endpoint.Recieve();
+                return Json(JsonConvert.DeserializeObject(serviceResponse.StringBody));
             }
             catch(Exception e)
             {

@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using RabbitMQ.Client.MessagePatterns;
-using Newtonsoft.Json;
 
 namespace scaling_microservices
 {
-    class RabbitEndpoint
+    public class RabbitEndpoint
     {
         public class Message
         {
@@ -61,11 +55,22 @@ namespace scaling_microservices
             }
         }
 
-        string InQueue;
+        public string InQueue { get; private set; }
 
-        IModel channel;
-        IConnection connection;
-        ISubscription subscription;
+        public IModel channel { get; private set; }
+        public IConnection connection { get; private set; }
+        public ISubscription subscription { get; private set; }
+
+        public RabbitEndpoint()
+        {
+            var factory = new ConnectionFactory();
+            connection = factory.CreateConnection();
+            channel = connection.CreateModel();
+
+            var queue = channel.QueueDeclare();
+            InQueue = queue.QueueName;
+            subscription = new Subscription(channel, InQueue);
+        }
 
         public RabbitEndpoint(string inQName)
         {
@@ -102,6 +107,15 @@ namespace scaling_microservices
             properties.CorrelationId = Guid.NewGuid().ToString();
             properties.ContentEncoding = msg.Encoding;
             channel.BasicPublish("", toQName, properties, msg.body);
+        }
+        
+        public void SendTo(QueueRequest request, string toQName)
+        {
+            var properties = channel.CreateBasicProperties();
+            properties.ReplyTo = InQueue;
+            properties.CorrelationId = Guid.NewGuid().ToString();
+            properties.ContentEncoding = "QueueRequest";
+            channel.BasicPublish("", toQName, properties, request.ToByteArray());
         }
     }
 }

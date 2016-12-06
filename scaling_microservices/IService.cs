@@ -11,9 +11,7 @@ namespace scaling_microservices
     public abstract class IService
     {
         protected string connectionString;//database connection string
-        protected IConnection connection;
-        protected IModel channel;
-        protected Subscription subscription;
+        protected RabbitEndpoint endpoint { get; private set; }
         protected Thread thread;
         protected abstract void ThreadFunction();
         protected abstract string ProcessRequest(QueueRequest request);
@@ -28,23 +26,21 @@ namespace scaling_microservices
         }
         public IService(IConnection _connection, IModel _model, string queueName)
         {
-            connection = _connection;
-            channel = _model;
-            subscription = new Subscription(channel, queueName);
+            endpoint = new RabbitEndpoint(/*_connection , _model,*/ queueName);
         }
-        public IService(string queueName, string port)
-        {
-            //port change prohibited
-            var factory = new ConnectionFactory() { HostName = "localhost"/*, Port = int.Parse(port)*/ };
-            connection = factory.CreateConnection();
+        //public IService(string queueName, string port)
+        //{
+        //    //port change prohibited
+        //    var factory = new ConnectionFactory() { HostName = "localhost"/*, Port = int.Parse(port)*/ };
+        //    connection = factory.CreateConnection();
             
-            {
-                channel = connection.CreateModel();
-                channel.QueueDeclare(queueName, false, false, false, null);
+        //    {
+        //        channel = connection.CreateModel();
+        //        channel.QueueDeclare(queueName, false, false, false, null);
 
-                subscription = new Subscription(connection.CreateModel(), queueName);
-            }
-        }
+        //        subscription = new Subscription(connection.CreateModel(), queueName);
+        //    }
+        //}
 
         public static IBasicProperties CreateBasicProperties(IModel channel, string responseQueue, string address = "")
         {
