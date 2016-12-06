@@ -6,60 +6,6 @@ namespace scaling_microservices
 {
     public class RabbitEndpoint
     {
-        public class Message
-        {
-            public IBasicProperties properties { get; set; }
-            public byte[] body { get; set; }
-
-            public string StringBody
-            {
-                get
-                {
-                    switch(properties.ContentEncoding)
-                    {
-                        case "UTF8": {
-                                return System.Text.Encoding.UTF8.GetString(body);
-                            }
-                        case "ASCII":
-                            {
-                                return System.Text.Encoding.ASCII.GetString(body);
-                            }
-                        case "UTF32":
-                            {
-                                return System.Text.Encoding.UTF32.GetString(body);
-                            }
-                        case "Unicode":
-                            {
-                                return System.Text.Encoding.Unicode.GetString(body);
-                            }
-                        default:
-                            throw new Exception("Invalid Encoding");
-                    }
-                }
-                set
-                {
-                    properties.ContentEncoding = "UTF8";
-                    body = System.Text.Encoding.UTF8.GetBytes(value);
-                }               
-            }
-            
-            public string Encoding
-            {
-                get
-                {
-                    return properties.ContentEncoding;
-                }
-            }
-
-            public string CorrelationId
-            {
-                get
-                {
-                    return properties.CorrelationId;
-                }
-            }
-        }
-
         public string InQueue { get; private set; }
 
         public IModel channel { get; private set; }
@@ -125,6 +71,11 @@ namespace scaling_microservices
             var properties = CreateBasicProperties();
             properties.ContentEncoding = typeof(QueueRequest).ToString();
             channel.BasicPublish("", toQName, properties, request.ToByteArray());
+        }
+
+        public Message Message()
+        {
+            return new Message() { properties = CreateBasicProperties() };
         }
 
         /// <summary>
