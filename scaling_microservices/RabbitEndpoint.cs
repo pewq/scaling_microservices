@@ -104,6 +104,16 @@ namespace scaling_microservices
             return props;
         }
 
+        public void Bind(string exchange, string routing)
+        {
+            channel.QueueBind(InQueue, exchange, routing);
+        }
+
+        public void UnBind(string exchange, string routing)
+        {
+            channel.QueueUnbind(InQueue, exchange, routing);
+        }
+
         public void Dispose()
         {
             channel.QueueDelete(InQueue);
