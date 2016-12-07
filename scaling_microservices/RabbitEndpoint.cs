@@ -4,7 +4,7 @@ using RabbitMQ.Client.MessagePatterns;
 
 namespace scaling_microservices
 {
-    public class RabbitEndpoint
+    public class RabbitEndpoint : IDisposable
     {
         public string InQueue { get; private set; }
 
@@ -23,28 +23,34 @@ namespace scaling_microservices
             subscription = new Subscription(channel, InQueue);
         }
 
-        public RabbitEndpoint(string inQName)
+        public RabbitEndpoint(string inQName = "")
         {
-            InQueue = inQName;
             var factory = new ConnectionFactory();
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
-
             var queue = channel.QueueDeclare(queue: inQName);
-
+            InQueue = queue.QueueName;
             subscription = new Subscription(channel, inQName);
         }
 
         public RabbitEndpoint(string host, int port, string inQname)
         {
-            InQueue = inQname;
             var factory = new ConnectionFactory() { HostName = host/*, Port = port*/};
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
             var queue = channel.QueueDeclare(queue: inQname);
-            subscription = new Subscription(channel, inQname);
+            InQueue = queue.QueueName;
+            subscription = new Subscription(channel, InQueue);
         }
 
+        public RabbitEndpoint(RabbitEndpoint other, string inQName = "")
+        {
+            connection = other.connection;
+            channel = other.channel;
+            var queue = channel.QueueDeclare(queue: inQName);
+            InQueue = queue.QueueName;
+            subscription = new Subscription(channel, InQueue);
+        }
         public Message Recieve()
         {
             var msg = subscription.Next();
@@ -57,7 +63,6 @@ namespace scaling_microservices
             props.ContentEncoding = msg.Encoding;
             channel.BasicPublish("", msg.properties.ReplyTo, props, msg.body);
         }
-
 
         public void SendTo(Message msg, string toQName)
         {
@@ -97,6 +102,11 @@ namespace scaling_microservices
             props.CorrelationId = Guid.NewGuid().ToString();
             props.ReplyTo = InQueue;
             return props;
+        }
+
+        public void Dispose()
+        {
+            channel.QueueDelete(InQueue);
         }
     }
 }
