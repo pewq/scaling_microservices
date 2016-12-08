@@ -10,7 +10,7 @@ namespace client_service
 {
     class ClientService : scaling_microservices.IService
     {
-        Thread inoutThread;
+        Thread sendThread;
 
         Timer timer;
 
@@ -27,15 +27,17 @@ namespace client_service
                     0,
                     30* 1000
                 );
-            inoutThread = new Thread(() =>
+            sendThread = new Thread(() =>
             {
                 while (true)
                 {
-                    var msg = endpoint.Recieve();
-                    Console.WriteLine(msg.StringBody);
+                    var msgLine = Console.ReadLine();
+                    var request = new QueueRequest() { method = "send_message" };
+                    request.arguments.Add("message", msgLine);
+                    endpoint.SendTo(request, DiscoveryService.QueueName);
                 }
             });
-            inoutThread.Start();
+            sendThread.Start();
         }
 
         protected override string ProcessRequest(QueueRequest request)
@@ -47,10 +49,8 @@ namespace client_service
         {
             while(true)
             {
-                var msgLine = Console.ReadLine();
-                var request = new QueueRequest() { method = "send_message" };
-                request.arguments.Add("message", msgLine);
-                endpoint.SendTo(request, DiscoveryService.QueueName);
+                var msg = endpoint.Recieve();
+                Console.WriteLine(msg.StringBody);
             }
         }
     }
