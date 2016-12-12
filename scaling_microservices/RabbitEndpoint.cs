@@ -78,6 +78,22 @@ namespace scaling_microservices
             channel.BasicPublish("", toQName, properties, request.ToByteArray());
         }
 
+        public void SendToExchange(QueueRequest request, string exchange, string routing)
+        {
+            var properties = CreateBasicProperties();
+            properties.ContentEncoding = typeof(QueueRequest).ToString();
+            channel.BasicPublish(exchange, routing, properties, request.ToByteArray());
+        }
+
+        public void SendToExchange(Message msg, string exchange, string routing)
+        {
+            var properties = CreateBasicProperties();
+            //TODO : prevent Encoding from getting from undefined properties
+            properties.ContentEncoding = msg.Encoding;
+            channel.BasicPublish(exchange, routing, properties, msg.body);
+
+        }
+
         public Message Message()
         {
             return new Message() { properties = CreateBasicProperties() };
