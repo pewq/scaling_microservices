@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using RabbitMQ.Client;
-using System.Web;
-using System.Text;
 using Newtonsoft.Json;
+using scaling_microservices.Rabbit;
 
 namespace scaling_microservices
 {

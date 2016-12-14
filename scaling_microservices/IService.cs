@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading;
-using RabbitMQ.Client;
-using RabbitMQ.Client.MessagePatterns;
+﻿using System.Threading;
+using scaling_microservices.Rabbit;
 
 namespace scaling_microservices
 {

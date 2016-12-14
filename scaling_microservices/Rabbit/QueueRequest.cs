@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
 
-namespace scaling_microservices
+namespace scaling_microservices.Rabbit
 {
     [Serializable]
     public class QueueRequest

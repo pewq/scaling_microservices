@@ -1,7 +1,7 @@
 ﻿using System;
 using RabbitMQ.Client;
 
-namespace scaling_microservices
+namespace scaling_microservices.Rabbit
 {
     /// <summary>
     /// not safe, when using a new message object with no properties.

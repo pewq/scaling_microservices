@@ -2,7 +2,7 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.MessagePatterns;
 
-namespace scaling_microservices
+namespace scaling_microservices.Rabbit
 {
     public class RabbitEndpoint : IDisposable
     {
