@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using scaling_microservices;
-using System.Threading;
+using scaling_microservices.Rabbit;
+
 
 namespace client_service
 {

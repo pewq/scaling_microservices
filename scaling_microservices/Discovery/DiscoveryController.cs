@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Net.Http;
 using System.Web.Http;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using RabbitMQ.Client.MessagePatterns;
 using Newtonsoft.Json;
+using scaling_microservices.Rabbit;
 
 namespace scaling_microservices.Controllers
 {
