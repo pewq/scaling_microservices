@@ -111,7 +111,7 @@ namespace scaling_microservices
                     {
                         try
                         {
-                            Console.WriteLine(request.arguments["message"]);
+                            Console.WriteLine(request["message"]);
                             var response = new
                             {
                                 response = "success",
