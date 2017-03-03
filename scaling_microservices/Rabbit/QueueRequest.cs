@@ -44,6 +44,19 @@ namespace scaling_microservices.Rabbit
                 this.arguments = obj.arguments.ToDictionary(x=> x.Key, x=> x.Value);
             }
         }
+
+        public string this[string key]
+        {
+            get
+            {
+                return arguments[key];
+            }
+            private set
+            {
+                arguments[key] = value;
+            }
+        }
+
         public byte[] ToByteArray()
         {
             var formatter = new BinaryFormatter();
