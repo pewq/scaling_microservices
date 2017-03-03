@@ -93,7 +93,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rabbit\RabbitEndpoint.cs" />
     <Compile Include="Rabbit\QueueRequest.cs" />
-    <Compile Include="ServiceRegistry.cs" />
+    <Compile Include="Registry\RegistryEntry.cs" />
+    <Compile Include="Registry\ServiceRegistry.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
