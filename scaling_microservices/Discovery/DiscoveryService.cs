@@ -51,7 +51,7 @@ namespace scaling_microservices
         protected override string ProcessRequest(QueueRequest request)
         {
             string method = request.method;
-            switch(method)
+            switch (method)
             {
                 case "get":
                     {
@@ -63,10 +63,32 @@ namespace scaling_microservices
                         return JsonConvert.SerializeObject(response);
                     }
                 case "ping":
+                    { 
+                        try
+                        {
+                            registry.Ping(request["name"], request["token"]);
+                            var response = new
+                            {
+                                response = "success",
+                                message = "refreshed"
+                            };
+                            return JsonConvert.SerializeObject(response);
+                        }
+                        catch (Exception)
+                        {
+                            var response = new
+                            {
+                                error = "error",
+                                message = "invalid parameters"
+                            };
+                            return JsonConvert.SerializeObject(response);
+                        }
+                    }
+                case "register":
                     {
                         try
                         {
-                            registry.Add(request.arguments["name"]);
+                            registry.Add(request["name"], request["address"], request["token"], request["type"]);
                             var response = new
                             {
                                 response = "success",
@@ -80,11 +102,10 @@ namespace scaling_microservices
                             var response = new
                             {
                                 error = "error",
-                                message = "no parameter 'name' provided"
+                                message = "invalid parameters"
                             };
                             return JsonConvert.SerializeObject(response);
                         }
-                        
                     }
                 case "send_message":
                     {
