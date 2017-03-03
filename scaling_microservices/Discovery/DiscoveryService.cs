@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using scaling_microservices.Rabbit;
+using scaling_microservices.Registry;
 
 namespace scaling_microservices
 {
