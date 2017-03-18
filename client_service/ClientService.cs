@@ -40,12 +40,6 @@ namespace client_service
                 }
             });
             sendThread.Start();
-            var registerReq = new QueueRequest() { method = "register" };
-            registerReq.Add("name", base.endpoint.InQueue);
-            registerReq.Add("address", base.endpoint.InQueue);
-            registerReq.Add("token", "");
-            registerReq.Add("type", "");
-            endpoint.SendTo(registerReq, DiscoveryService.QueueName);
         }
 
         protected override string ProcessRequest(QueueRequest request)

@@ -6,11 +6,6 @@ using scaling_microservices.Registry;
 namespace scaling_microservices
 {
     /// <note>singleton Instance, listens to queue with @QueueName</note>
-    /// methods : 
-    /// get
-    /// ping(name,token)
-    /// register(name,address,token,type)
-    /// send_message(message)
     public class DiscoveryService : IService
     {
         private ServiceRegistry registry;
@@ -67,10 +62,6 @@ namespace scaling_microservices
                         };
                         return JsonConvert.SerializeObject(response);
                     }
-                //case "get_data":
-                //    {
-                //        var 
-                //    }
                 case "ping":
                     { 
                         try

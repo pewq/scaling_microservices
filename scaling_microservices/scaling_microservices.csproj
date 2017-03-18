@@ -87,9 +87,7 @@
   <ItemGroup>
     <Compile Include="Discovery\DiscoveryService.cs" />
     <Compile Include="Discovery\DiscoveryController.cs" />
-    <Compile Include="EventDictionary.cs" />
     <Compile Include="IService.cs" />
-    <Compile Include="Rabbit\IEndpoint.cs" />
     <Compile Include="Rabbit\Message.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
