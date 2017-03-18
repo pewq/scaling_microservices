@@ -4,51 +4,27 @@ using RabbitMQ.Client.MessagePatterns;
 
 namespace scaling_microservices.Rabbit
 {
-    public class RabbitEndpoint : IDisposable
+    public class RabbitEndpoint : IEndpoint
     {
-        public string InQueue { get; private set; }
-
-        public IModel channel { get; private set; }
-        public IConnection connection { get; private set; }
         public ISubscription subscription { get; private set; }
 
-        public RabbitEndpoint()
+        public RabbitEndpoint() : base()
         {
-            var factory = new ConnectionFactory();
-            connection = factory.CreateConnection();
-            channel = connection.CreateModel();
-
-            var queue = channel.QueueDeclare();
-            InQueue = queue.QueueName;
             subscription = new Subscription(channel, InQueue);
         }
 
-        public RabbitEndpoint(string inQName = "")
+        public RabbitEndpoint(string inQName = "") : base(inQName)
         {
-            var factory = new ConnectionFactory();
-            connection = factory.CreateConnection();
-            channel = connection.CreateModel();
-            var queue = channel.QueueDeclare(queue: inQName);
-            InQueue = queue.QueueName;
             subscription = new Subscription(channel, inQName);
         }
 
-        public RabbitEndpoint(string host, int port, string inQname)
+        public RabbitEndpoint(string host, int port, string inQName) : base(host,port,inQName)
         {
-            var factory = new ConnectionFactory() { HostName = host/*, Port = port*/};
-            connection = factory.CreateConnection();
-            channel = connection.CreateModel();
-            var queue = channel.QueueDeclare(queue: inQname);
-            InQueue = queue.QueueName;
             subscription = new Subscription(channel, InQueue);
         }
 
-        public RabbitEndpoint(RabbitEndpoint other, string inQName = "")
+        public RabbitEndpoint(RabbitEndpoint other, string inQName = "") : base(other, inQName)
         {
-            connection = other.connection;
-            channel = other.channel;
-            var queue = channel.QueueDeclare(queue: inQName);
-            InQueue = queue.QueueName;
             subscription = new Subscription(channel, InQueue);
         }
         public Message Recieve()
@@ -92,47 +68,6 @@ namespace scaling_microservices.Rabbit
             properties.ContentEncoding = msg.Encoding;
             channel.BasicPublish(exchange, routing, properties, msg.body);
 
-        }
-
-        public Message Message()
-        {
-            return new Message() { properties = CreateBasicProperties() };
-        }
-
-        /// <summary>
-        /// Creates basic properties with correlationId from msg
-        /// </summary>
-        public IBasicProperties CreateBasicProperties(Message msg)
-        {
-            var props = channel.CreateBasicProperties();
-            props.CorrelationId = msg.CorrelationId;
-            return props;
-        }
-
-        /// <summary>
-        /// Creates basic properties with new CorrelationID and set ReplyTo to this.InQueue
-        /// </summary>
-        public IBasicProperties CreateBasicProperties()
-        {
-            var props = channel.CreateBasicProperties();
-            props.CorrelationId = Guid.NewGuid().ToString();
-            props.ReplyTo = InQueue;
-            return props;
-        }
-
-        public void Bind(string exchange, string routing)
-        {
-            channel.QueueBind(InQueue, exchange, routing);
-        }
-
-        public void UnBind(string exchange, string routing)
-        {
-            channel.QueueUnbind(InQueue, exchange, routing);
-        }
-
-        public void Dispose()
-        {
-            channel.QueueDelete(InQueue);
         }
     }
 }
