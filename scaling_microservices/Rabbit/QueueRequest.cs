@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
+using RabbitMQ.Client;
 
 namespace scaling_microservices.Rabbit
 {
@@ -16,6 +17,8 @@ namespace scaling_microservices.Rabbit
         {
             this.method = method;
         }
+
+        public IBasicProperties properties { get; set; }
         public Dictionary<string, string> arguments { get; private set; }
 
         public QueueRequest(string method, string paramstring)
@@ -43,6 +46,11 @@ namespace scaling_microservices.Rabbit
                 this.method = obj.method;
                 this.arguments = obj.arguments.ToDictionary(x=> x.Key, x=> x.Value);
             }
+        }
+
+        public QueueRequest(byte[] bytes, IBasicProperties props) : this(bytes)
+        {
+            properties = props;
         }
 
         public string this[string key]

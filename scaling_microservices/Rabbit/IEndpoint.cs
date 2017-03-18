@@ -16,7 +16,6 @@ namespace scaling_microservices.Rabbit
             var factory = new ConnectionFactory();
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
-
             var queue = channel.QueueDeclare();
             InQueue = queue.QueueName;
         }
