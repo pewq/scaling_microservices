@@ -8,7 +8,7 @@ namespace scaling_microservices.Controllers
 {
     public class DiscoveryController : ApiController
     {
-        RabbitEndpoint endpoint;
+        SubscriptionEndpoint endpoint;
         DiscoveryController()
         {
             var factory = new ConnectionFactory()
@@ -16,7 +16,7 @@ namespace scaling_microservices.Controllers
                 HostName = "localhost"
             };
 
-            endpoint = new RabbitEndpoint();
+            endpoint = new SubscriptionEndpoint();
         }
 
 

@@ -39,7 +39,7 @@ namespace scaling_microservices.Rabbit
             InQueue = queue.QueueName;
         }
 
-        public IEndpoint(RabbitEndpoint other, string inQName = "")
+        public IEndpoint(SubscriptionEndpoint other, string inQName = "")
         {
             connection = other.connection;
             channel = other.channel;

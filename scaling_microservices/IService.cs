@@ -10,7 +10,7 @@ namespace scaling_microservices
     public abstract class IService
     {
         protected string connectionString;//database connection string
-        protected RabbitEndpoint endpoint { get; private set; }
+        protected SubscriptionEndpoint endpoint { get; private set; }
         protected Thread thread;
 
         protected EventDictionary<Dictionary<string,string>> Handlers { get; private set; } 
@@ -29,18 +29,18 @@ namespace scaling_microservices
 
         public IService()
         {
-            endpoint = new RabbitEndpoint();
+            endpoint = new SubscriptionEndpoint();
             Handlers.Add("default", new Handler<Dictionary<string,string>>(defaultHandler));
         }
 
         public IService(string queueName)
         {
-            endpoint = new RabbitEndpoint(/*_connection , _model,*/ queueName);
+            endpoint = new SubscriptionEndpoint(/*_connection , _model,*/ queueName);
             Handlers.Add("default", new Handler<Dictionary<string, string>>(defaultHandler));
         }
         public IService(string queueName, string port)
         {
-            endpoint = new RabbitEndpoint("localhost", int.Parse(port), queueName);
+            endpoint = new SubscriptionEndpoint("localhost", int.Parse(port), queueName);
             Handlers.Add("default", new Handler<Dictionary<string, string>>(defaultHandler));
         }
 

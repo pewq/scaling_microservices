@@ -4,26 +4,26 @@ using RabbitMQ.Client.MessagePatterns;
 
 namespace scaling_microservices.Rabbit
 {
-    public class RabbitEndpoint : IEndpoint
+    public class SubscriptionEndpoint : IEndpoint
     {
         public ISubscription subscription { get; private set; }
 
-        public RabbitEndpoint() : base()
+        public SubscriptionEndpoint() : base()
         {
             subscription = new Subscription(channel, InQueue);
         }
 
-        public RabbitEndpoint(string inQName = "") : base(inQName)
+        public SubscriptionEndpoint(string inQName = "") : base(inQName)
         {
             subscription = new Subscription(channel, inQName);
         }
 
-        public RabbitEndpoint(string host, int port, string inQName) : base(host,port,inQName)
+        public SubscriptionEndpoint(string host, int port, string inQName) : base(host,port,inQName)
         {
             subscription = new Subscription(channel, InQueue);
         }
 
-        public RabbitEndpoint(RabbitEndpoint other, string inQName = "") : base(other, inQName)
+        public SubscriptionEndpoint(SubscriptionEndpoint other, string inQName = "") : base(other, inQName)
         {
             subscription = new Subscription(channel, InQueue);
         }
