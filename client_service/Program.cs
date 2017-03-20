@@ -11,7 +11,7 @@ namespace client_service
         static void Main(string[] args)
         {
             var service = new ClientService();
-            service.Start();
+            //service.Start();
             Thread.Sleep(-1);
         }
     }

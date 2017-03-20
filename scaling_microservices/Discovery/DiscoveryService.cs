@@ -27,7 +27,7 @@ namespace scaling_microservices
         {
             this.Port = port;
             registry = new ServiceRegistry();
-            this.Start();
+            //this.Start();
         }
 
         public int Port { get; private set; }
@@ -38,21 +38,21 @@ namespace scaling_microservices
             Instance = new DiscoveryService(QueueName);
         }
 
-        protected override void ThreadFunction()
-        {
-            while(true)
-            {
-                var message = endpoint.Recieve();
-                if(message.Encoding == typeof(QueueRequest).ToString())
-                {
-                    var request = new QueueRequest(message.body);
-                    var response = this.ProcessRequest(request);
-                    var msg = new Message() { properties = endpoint.CreateBasicProperties(message) };
-                    msg.StringBody = response;
-                    endpoint.SendTo(msg, message.properties.ReplyTo);
-                }
-            }
-        }
+        //protected override void ThreadFunction()
+        //{
+        //    while(true)
+        //    {
+        //        var message = endpoint.Recieve();
+        //        if(message.Encoding == typeof(QueueRequest).ToString())
+        //        {
+        //            var request = new QueueRequest(message.body);
+        //            var response = this.ProcessRequest(request);
+        //            var msg = new Message() { properties = endpoint.CreateBasicProperties(message) };
+        //            msg.StringBody = response;
+        //            endpoint.SendTo(msg, message.properties.ReplyTo);
+        //        }
+        //    }
+        //}
         protected override string ProcessRequest(QueueRequest request)
         {
             string method = request.method;

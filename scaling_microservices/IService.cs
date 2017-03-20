@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
+using RabbitMQ.Client;
+using Newtonsoft.Json;
 
 namespace scaling_microservices.Rabbit
 {
@@ -16,39 +17,56 @@ namespace scaling_microservices.Rabbit
 
         protected EventDictionary<RequestHandle> Handlers { get; private set; } 
             = new EventDictionary<RequestHandle>();
-        protected abstract void ThreadFunction();
+        //protected abstract void ThreadFunction();
         protected abstract string ProcessRequest(QueueRequest request);
-        public void Start()
-        {
-            thread = new Thread(ThreadFunction);
-            thread.Start();
-        }
-        public void Stop()
-        {
-            thread.Abort();
-        }
+        //public void Start()
+        //{
+        //    thread = new Thread(ThreadFunction);
+        //    thread.Start();
+        //}
+        //public void Stop()
+        //{
+        //    thread.Abort();
+        //}
 
         public IService()
         {
             endpoint = new SubscriptionEndpoint();
-            Handlers.Add("default", new RequestHandle(defaultHandler));
+            ThisInit();
         }
 
         public IService(string queueName)
         {
             endpoint = new SubscriptionEndpoint(/*_connection , _model,*/ queueName);
-            Handlers.Add("default", new RequestHandle(defaultHandler));
+            ThisInit();
         }
         public IService(string queueName, string port)
         {
             endpoint = new SubscriptionEndpoint("localhost", int.Parse(port), queueName);
+            ThisInit();
+        }
+
+        private void ThisInit()
+        {
             Handlers.Add("default", new RequestHandle(defaultHandler));
+            ResponseHandler += ResponseHandlerFun;
         }
 
         #region Handlers
         private void defaultHandler(QueueRequest req)
         {
 
+        }
+
+        protected delegate void ResponseHandlerDelegate(IBasicProperties props, object body);
+
+        protected event ResponseHandlerDelegate ResponseHandler = null;
+
+        protected void ResponseHandlerFun(IBasicProperties DestinationProps, object responseBody)
+        {
+            Message msg = new Message();
+            msg.StringBody = JsonConvert.SerializeObject(responseBody);
+            endpoint.SendTo(msg, DestinationProps.ReplyTo);
         }
         #endregion
     }   
