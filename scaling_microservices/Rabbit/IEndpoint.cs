@@ -71,7 +71,42 @@ namespace scaling_microservices.Rabbit
             props.ReplyTo = InQueue;
             return props;
         }
+        public void Send(Message msg)
+        {
+            var props = CreateBasicProperties(msg);
+            props.ContentEncoding = msg.Encoding;
+            channel.BasicPublish("", msg.properties.ReplyTo, props, msg.body);
+        }
 
+        public void SendTo(Message msg, string toQName)
+        {
+            var properties = CreateBasicProperties();
+            properties.ContentEncoding = msg.Encoding;
+            channel.BasicPublish("", toQName, properties, msg.body);
+        }
+
+        public void SendTo(QueueRequest request, string toQName)
+        {
+            var properties = CreateBasicProperties();
+            properties.ContentEncoding = typeof(QueueRequest).ToString();
+            channel.BasicPublish("", toQName, properties, request.ToByteArray());
+        }
+
+        public void SendToExchange(QueueRequest request, string exchange, string routing)
+        {
+            var properties = CreateBasicProperties();
+            properties.ContentEncoding = typeof(QueueRequest).ToString();
+            channel.BasicPublish(exchange, routing, properties, request.ToByteArray());
+        }
+
+        public void SendToExchange(Message msg, string exchange, string routing)
+        {
+            var properties = CreateBasicProperties();
+            //TODO : prevent Encoding from getting from undefined properties
+            properties.ContentEncoding = msg.Encoding;
+            channel.BasicPublish(exchange, routing, properties, msg.body);
+
+        }
         public void Bind(string exchange, string routing)
         {
             channel.QueueBind(InQueue, exchange, routing);
