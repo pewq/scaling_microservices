@@ -48,18 +48,8 @@ namespace client_service
             endpoint.SendTo(registerReq, DiscoveryService.QueueName);
         }
 
-        protected override string ProcessRequest(QueueRequest request)
+        protected override void ProcessRequest(QueueRequest request)
         {
-            return "";
         }
-
-        //protected override void ThreadFunction()
-        //{
-        //    while(true)
-        //    {
-        //        var msg = endpoint.Recieve();
-        //        Console.WriteLine(msg.StringBody);
-        //    }
-        //}
     }
 }

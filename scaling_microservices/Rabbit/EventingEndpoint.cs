@@ -3,11 +3,11 @@ using RabbitMQ.Client.Events;
 
 namespace scaling_microservices.Rabbit
 {
-    class EventingEndpoint : IEndpoint
+    public class EventingEndpoint : IEndpoint
     {
         EventingBasicConsumer consumer;
 
-        public event EventHandler<Message> handlers = null;
+        public event EventHandler<Message> OnRecieved = null;
 
         public EventingEndpoint() : base()
         {
@@ -32,10 +32,10 @@ namespace scaling_microservices.Rabbit
 
         private void Consumer_Received(object sender, BasicDeliverEventArgs e)
         {
-            if(handlers != null)
+            if(OnRecieved != null)
             {
                 var message = new Message() { properties = e.BasicProperties, body = e.Body };
-                handlers(this, message);
+                OnRecieved(this, message);
             }
         }
     }

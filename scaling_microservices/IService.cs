@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using RabbitMQ.Client;
 using Newtonsoft.Json;
 
@@ -9,70 +10,94 @@ namespace scaling_microservices.Rabbit
     /// </summary>
     public abstract class IService
     {
-        protected delegate void RequestHandle(QueueRequest req);
-
         protected string connectionString;//database connection string
-        protected SubscriptionEndpoint endpoint { get; private set; }
-        protected Thread thread;
+        protected EventingEndpoint endpoint { get; private set; }
 
-        protected EventDictionary<RequestHandle> Handlers { get; private set; } 
-            = new EventDictionary<RequestHandle>();
-        //protected abstract void ThreadFunction();
-        protected abstract string ProcessRequest(QueueRequest request);
-        //public void Start()
-        //{
-        //    thread = new Thread(ThreadFunction);
-        //    thread.Start();
-        //}
-        //public void Stop()
-        //{
-        //    thread.Abort();
-        //}
+        protected EventDictionary<RequestHandleDelegate> Handlers { get; private set; } 
+            = new EventDictionary<RequestHandleDelegate>();
+        protected virtual void ProcessRequest(QueueRequest request)
+        {
+            RequestHandleDelegate handle;
+            try
+            {
+                if (null != (handle = (RequestHandleDelegate)Handlers[request.method]))
+                {
+                    handle(request);
+                }
+            }
+            catch (Exception e)
+            {
+                OnException(request, e);
+            }
+        }
 
         public IService()
         {
-            endpoint = new SubscriptionEndpoint();
+            endpoint = new EventingEndpoint();
             ThisInit();
         }
 
         public IService(string queueName)
         {
-            endpoint = new SubscriptionEndpoint(/*_connection , _model,*/ queueName);
+            endpoint = new EventingEndpoint(/*_connection , _model,*/ queueName);
             ThisInit();
         }
         public IService(string queueName, string port)
         {
-            endpoint = new SubscriptionEndpoint("localhost", int.Parse(port), queueName);
+            endpoint = new EventingEndpoint("localhost", int.Parse(port), queueName);
             ThisInit();
         }
 
+
+
+        /// <summary>
+        /// common part for all constructors
+        /// </summary>
         private void ThisInit()
         {
-            Handlers.Add("default", new RequestHandle(defaultHandler));
-            ResponseHandler += ResponseHandlerFun;
+            endpoint.OnRecieved += Endpoint_OnRecieved;
+            Handlers.Add("default", new RequestHandleDelegate(DefaultHandlerFun));
+            OnResponse += __responseHandlerFun;
+            OnException += ExceptionHandlerFun;
+            OnRequest += ProcessRequest;
         }
 
         #region Handlers
-        private void defaultHandler(QueueRequest req)
+        protected delegate void RequestHandleDelegate(QueueRequest req);
+
+        protected event RequestHandleDelegate OnRequest = null;
+
+        protected virtual void DefaultHandlerFun(QueueRequest req)
         {
 
         }
+        //handle for endpoint recieved
+        private void Endpoint_OnRecieved(object sender, Message e)
+        {
+            QueueRequest request = new QueueRequest(e.body, e.properties);
+            OnRequest(request);
+        }
+        #region ExceptionHandler
+        protected delegate void ExceptionHandlerDelegate(QueueRequest req, Exception e);
 
+        protected event ExceptionHandlerDelegate OnException = null;
+        protected virtual void ExceptionHandlerFun(QueueRequest req, Exception e)
+        {
+            
+        }
+        #endregion
+        #region Response Handler
         protected delegate void ResponseHandlerDelegate(IBasicProperties props, object body);
 
-        protected event ResponseHandlerDelegate ResponseHandler = null;
+        protected event ResponseHandlerDelegate OnResponse = null;
 
-        protected void ResponseHandlerFun(IBasicProperties DestinationProps, object responseBody)
+        private void __responseHandlerFun(IBasicProperties DestinationProps, object responseBody)
         {
             Message msg = new Message();
             msg.StringBody = JsonConvert.SerializeObject(responseBody);
             endpoint.SendTo(msg, DestinationProps.ReplyTo);
         }
         #endregion
-    }   
+        #endregion
+    }
 }
-
-
-/*TODO : 
- * remove thread
- */
