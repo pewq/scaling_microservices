@@ -4,7 +4,7 @@ using RabbitMQ.Client;
 using Newtonsoft.Json;
 using scaling_microservices.Rabbit;
 
-namespace scaling_microservices.Controllers
+namespace discovery_service
 {
     public class DiscoveryController : ApiController
     {
@@ -31,7 +31,7 @@ namespace scaling_microservices.Controllers
                 var serviceResponse = endpoint.Recieve();
                 return Json(JsonConvert.DeserializeObject(serviceResponse.StringBody));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new System.Web.Http.Results.ExceptionResult(e, this);
             }
@@ -64,14 +64,14 @@ namespace scaling_microservices.Controllers
                 request.arguments.Add("name", id);
                 endpoint.SendTo(request, DiscoveryService.QueueName);
                 var endpResponse = JsonConvert.DeserializeObject(endpoint.Recieve().StringBody);
-                if(endpResponse.GetType().GetField("error") != null)
+                if (endpResponse.GetType().GetField("error") != null)
                 {
                     throw new Exception(endpResponse.GetType().GetField("message").GetValue(endpResponse).ToString());
                 }
                 //Access discovery service
                 return new System.Web.Http.Results.StatusCodeResult(System.Net.HttpStatusCode.OK, this);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 //do nothing really
                 //prop: try to restart service

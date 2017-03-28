@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using RabbitMQ.Client;
 using Newtonsoft.Json;
 
@@ -27,7 +26,7 @@ namespace scaling_microservices.Rabbit
             }
             catch (Exception e)
             {
-                OnException(request, e);
+                OnException(e, request);
             }
         }
 
@@ -57,8 +56,8 @@ namespace scaling_microservices.Rabbit
         {
             endpoint.OnRecieved += Endpoint_OnRecieved;
             Handlers.Add("default", new RequestHandleDelegate(DefaultHandlerFun));
-            OnResponse += __responseHandlerFun;
-            OnException += ExceptionHandlerFun;
+            ResponseEvent += __responseHandlerFun;
+            ExceptionEvent += ExceptionHandlerFun;
             OnRequest += ProcessRequest;
         }
 
@@ -78,20 +77,30 @@ namespace scaling_microservices.Rabbit
             OnRequest(request);
         }
         #region ExceptionHandler
-        protected delegate void ExceptionHandlerDelegate(QueueRequest req, Exception e);
+        protected delegate void ExceptionHandlerDelegate(object o, QueueRequest req, Exception e);
 
-        protected event ExceptionHandlerDelegate OnException = null;
-        protected virtual void ExceptionHandlerFun(QueueRequest req, Exception e)
+        protected event ExceptionHandlerDelegate ExceptionEvent = null;
+
+        protected void OnException(Exception e, QueueRequest req)
+        {
+            ExceptionEvent(this, req, e);
+        }
+        protected virtual void ExceptionHandlerFun(object o, QueueRequest req, Exception e)
         {
             
         }
         #endregion
         #region Response Handler
-        protected delegate void ResponseHandlerDelegate(IBasicProperties props, object body);
+        protected delegate void ResponseHandlerDelegate(object o, IBasicProperties props, object body);
 
-        protected event ResponseHandlerDelegate OnResponse = null;
+        protected event ResponseHandlerDelegate ResponseEvent = null;
 
-        private void __responseHandlerFun(IBasicProperties DestinationProps, object responseBody)
+        protected void OnResponse(IBasicProperties props, object body)
+        {
+            this.ResponseEvent(this, props, body);
+        }
+
+        private void __responseHandlerFun(object o, IBasicProperties DestinationProps, object responseBody)
         {
             Message msg = new Message();
             msg.StringBody = JsonConvert.SerializeObject(responseBody);

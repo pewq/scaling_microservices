@@ -1,7 +1,7 @@
 ﻿using Owin;
 using System.Web.Http;
 
-namespace scaling_microservices
+namespace discovery_service
 {
     public class Startup
     {

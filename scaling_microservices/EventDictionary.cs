@@ -7,9 +7,28 @@ namespace scaling_microservices
 
     public class EventDictionary<T> : Dictionary<string, System.Delegate>
     {
-        //TODO : add lock
         object Lock = new object();
         
+        public new System.Delegate this[string key]
+        {
+            get
+            {
+                lock(Lock)
+                {
+                    return base[key];
+                }
+            }
+            //TODO : is setter needed?
+            //or is it better to replace with (AddEvent(name) {this[name] = null;}) ?
+            set
+            {
+                lock(Lock)
+                {
+                    base[key] = value;
+                }
+            }
+        }
+
         public void Handle(string name, EventArgs args)
         {
             base[name].DynamicInvoke(args);

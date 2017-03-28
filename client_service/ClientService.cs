@@ -23,6 +23,7 @@ namespace client_service
                     {
                         var req = new QueueRequest() { method = "ping" };
                         req.arguments.Add("name", endpoint.InQueue);
+                        req.arguments.Add("token", "");
                         endpoint.SendTo(req, DiscoveryService.QueueName);
                     },
                     null,

@@ -9,7 +9,7 @@ namespace scaling_microservices.Registry
     /// class, which contains active services and recieves
     /// pings from them in order to keep the connection
     /// </summary>
-    class ServiceRegistry
+    public class ServiceRegistry
     {
         private List<RegistryEntry> items;
 

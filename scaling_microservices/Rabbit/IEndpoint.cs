@@ -56,9 +56,7 @@ namespace scaling_microservices.Rabbit
         /// </summary>
         public IBasicProperties CreateBasicProperties(Message msg)
         {
-            var props = channel.CreateBasicProperties();
-            props.CorrelationId = msg.CorrelationId;
-            return props;
+            return CreateBasicProperties(CorrelationId: msg.CorrelationId);
         }
 
         /// <summary>
@@ -66,9 +64,25 @@ namespace scaling_microservices.Rabbit
         /// </summary>
         public IBasicProperties CreateBasicProperties()
         {
+            return CreateBasicProperties(ReplyTo: InQueue);
+        }
+
+        public IBasicProperties CreateBasicProperties( 
+            string CorrelationId = "",
+            string ReplyTo = "",
+            string Encoding = "")
+        {
             var props = channel.CreateBasicProperties();
-            props.CorrelationId = Guid.NewGuid().ToString();
-            props.ReplyTo = InQueue;
+            props.CorrelationId = (CorrelationId != "") ? CorrelationId : Guid.NewGuid().ToString();
+            if(Encoding != "")
+            {
+                props.ContentEncoding = Encoding;
+            }
+            if(ReplyTo != "")
+            {
+                props.ReplyTo = ReplyTo;
+            }
+
             return props;
         }
         public void Send(Message msg)
@@ -78,35 +92,45 @@ namespace scaling_microservices.Rabbit
             channel.BasicPublish("", msg.properties.ReplyTo, props, msg.body);
         }
 
-        public void SendTo(Message msg, string toQName)
+        public IBasicProperties SendTo(Message msg, string toQName)
         {
             var properties = CreateBasicProperties();
             properties.ContentEncoding = msg.Encoding;
             channel.BasicPublish("", toQName, properties, msg.body);
+            return properties;
         }
 
-        public void SendTo(QueueRequest request, string toQName)
+        public IBasicProperties SendTo(QueueRequest request, string toQName)
         {
             var properties = CreateBasicProperties();
             properties.ContentEncoding = typeof(QueueRequest).ToString();
             channel.BasicPublish("", toQName, properties, request.ToByteArray());
+            return properties;
         }
 
-        public void SendToExchange(QueueRequest request, string exchange, string routing)
+        public IBasicProperties SendToExchange(QueueRequest request, string exchange, string routing)
         {
             var properties = CreateBasicProperties();
             properties.ContentEncoding = typeof(QueueRequest).ToString();
             channel.BasicPublish(exchange, routing, properties, request.ToByteArray());
+            return properties;
         }
 
-        public void SendToExchange(Message msg, string exchange, string routing)
+        public IBasicProperties SendToExchange(Message msg, string exchange, string routing)
         {
             var properties = CreateBasicProperties();
             //TODO : prevent Encoding from getting from undefined properties
             properties.ContentEncoding = msg.Encoding;
             channel.BasicPublish(exchange, routing, properties, msg.body);
-
+            return properties;
         }
+        
+        public virtual void SendWithHandler(QueueRequest request, string toQName, System.Delegate Handler)
+        {
+            var properties = SendTo(request, toQName);
+            
+        }
+
         public void Bind(string exchange, string routing)
         {
             channel.QueueBind(InQueue, exchange, routing);
