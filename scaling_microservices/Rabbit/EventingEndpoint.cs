@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using RabbitMQ.Client.Events;
 
 namespace scaling_microservices.Rabbit
@@ -35,8 +37,23 @@ namespace scaling_microservices.Rabbit
             if(OnRecieved != null)
             {
                 var message = new Message() { properties = e.BasicProperties, body = e.Body };
-                OnRecieved(this, message);
+                if (correlatedCallbacks.ContainsKey(e.BasicProperties.CorrelationId))
+                {
+                    (correlatedCallbacks[e.BasicProperties.CorrelationId])(this, message);
+                }
+                else
+                {
+                    OnRecieved(this, message);
+                }
             }
+        }
+
+
+        private Dictionary<string, EventHandler<Message>> correlatedCallbacks = new Dictionary<string, EventHandler<Message>>();
+        public void SendWithCallback(string toQName, QueueRequest request, EventHandler<Message> callback)
+        {
+            var props = SendTo(request, toQName);
+            correlatedCallbacks.Add(props.CorrelationId, callback);
         }
     }
 }
