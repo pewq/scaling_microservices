@@ -125,12 +125,6 @@ namespace scaling_microservices.Rabbit
             return properties;
         }
         
-        public virtual void SendWithHandler(QueueRequest request, string toQName, System.Delegate Handler)
-        {
-            var properties = SendTo(request, toQName);
-            
-        }
-
         public void Bind(string exchange, string routing)
         {
             channel.QueueBind(InQueue, exchange, routing);
