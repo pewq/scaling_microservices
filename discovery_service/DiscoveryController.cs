@@ -8,7 +8,7 @@ namespace discovery_service
 {
     public class DiscoveryController : ApiController
     {
-        SubscriptionEndpoint endpoint;
+        EventingEndpoint endpoint;
         DiscoveryController()
         {
             var factory = new ConnectionFactory()
@@ -16,7 +16,7 @@ namespace discovery_service
                 HostName = "localhost"
             };
 
-            endpoint = new SubscriptionEndpoint();
+            endpoint = new EventingEndpoint();
         }
 
 
@@ -27,8 +27,9 @@ namespace discovery_service
             try
             {
                 var request = new QueueRequest() { method = "get" };
-                endpoint.SendTo(request, DiscoveryService.QueueName);
-                var serviceResponse = endpoint.Recieve();
+                var callback = new EventHandler<Message>((obj, arg) => { });
+                endpoint.SendWithCallback(DiscoveryService.QueueName, request, callback);
+
                 return Json(JsonConvert.DeserializeObject(serviceResponse.StringBody));
             }
             catch (Exception e)
