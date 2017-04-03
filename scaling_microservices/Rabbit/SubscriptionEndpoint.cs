@@ -9,12 +9,17 @@ namespace scaling_microservices.Rabbit
 
         public SubscriptionEndpoint() : base()
         {
-            subscription = new Subscription(channel, InQueue);
+            subscription = new Subscription(base.channel, base.InQueue);
+        }
+
+        public SubscriptionEndpoint(ConnectionFactory f) : base(f)
+        {
+            subscription = new Subscription(base.channel, base.InQueue);
         }
 
         public SubscriptionEndpoint(string inQName = "") : base(inQName)
         {
-            subscription = new Subscription(channel, inQName);
+            subscription = new Subscription(base.channel, base.InQueue);
         }
 
         public SubscriptionEndpoint(string host, int port, string inQName) : base(host,port,inQName)

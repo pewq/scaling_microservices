@@ -11,6 +11,8 @@ namespace scaling_microservices.Rabbit
     [Serializable]
     public class QueueRequest
     {
+        public static string classname { get { return typeof(QueueRequest).ToString(); } }
+
         public string method { get; set; }
 
         public void SetMethod(string method)

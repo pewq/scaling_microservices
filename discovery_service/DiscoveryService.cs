@@ -19,15 +19,20 @@ namespace discovery_service
         private DiscoveryService(string queueName) : base(queueName)
         {
             this.registry = new ServiceRegistry();
+            ThisInit();
         }
         private DiscoveryService(string queueName, string port)
             : this(queueName, int.Parse(port))
-        { }
+        {
+            this.registry = new ServiceRegistry();
+            ThisInit();
+        }
         private DiscoveryService(string queueName, int port) :
             base(queueName, port.ToString())
         {
             this.Port = port;
             registry = new ServiceRegistry();
+            ThisInit();
         }
 
         public int Port { get; private set; }

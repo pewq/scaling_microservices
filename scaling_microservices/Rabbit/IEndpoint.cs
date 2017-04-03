@@ -10,11 +10,19 @@ namespace scaling_microservices.Rabbit
 
         public IModel channel { get; private set; }
         public IConnection connection { get; private set; }
-
+        
         public IEndpoint()
         {
             var factory = new ConnectionFactory();
             connection = factory.CreateConnection();
+            channel = connection.CreateModel();
+            var queue = channel.QueueDeclare();
+            InQueue = queue.QueueName;
+        }
+
+        public IEndpoint(ConnectionFactory f)
+        {
+            connection = f.CreateConnection();
             channel = connection.CreateModel();
             var queue = channel.QueueDeclare();
             InQueue = queue.QueueName;
@@ -102,8 +110,8 @@ namespace scaling_microservices.Rabbit
 
         public IBasicProperties SendTo(QueueRequest request, string toQName)
         {
-            var properties = CreateBasicProperties();
-            properties.ContentEncoding = typeof(QueueRequest).ToString();
+            var properties = CreateBasicProperties(ReplyTo: this.InQueue,
+                Encoding: typeof(QueueRequest).ToString());
             channel.BasicPublish("", toQName, properties, request.ToByteArray());
             return properties;
         }

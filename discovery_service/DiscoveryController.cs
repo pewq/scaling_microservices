@@ -16,7 +16,7 @@ namespace discovery_service
                 HostName = "localhost"
             };
 
-            endpoint = new SubscriptionEndpoint();
+            endpoint = new SubscriptionEndpoint(factory);
         }
 
 
@@ -26,7 +26,7 @@ namespace discovery_service
         {
             try
             {
-                var request = new QueueRequest() { method = "get" };
+                var request = new QueueRequest() { method = "get_services" };
                 endpoint.SendTo(request, DiscoveryService.QueueName);
                 var serviceResponse = endpoint.Recieve();
                 return Json(JsonConvert.DeserializeObject(serviceResponse.StringBody));
