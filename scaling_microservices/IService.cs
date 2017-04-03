@@ -73,8 +73,12 @@ namespace scaling_microservices.Rabbit
         //handle for endpoint recieved
         private void Endpoint_OnRecieved(object sender, Message e)
         {
-            QueueRequest request = new QueueRequest(e.body, e.properties);
-            OnRequest(request);
+            if (e.Encoding == typeof(QueueRequest).ToString())
+            {
+                QueueRequest request = new QueueRequest(e.body, e.properties);
+                OnRequest(request);
+            }
+            else Console.WriteLine(e.StringBody);
         }
         #region ExceptionHandler
         protected delegate void ExceptionHandlerDelegate(object o, QueueRequest req, Exception e);
@@ -100,11 +104,13 @@ namespace scaling_microservices.Rabbit
             this.ResponseEvent(this, props, body);
         }
 
-        private void __responseHandlerFun(object o, IBasicProperties DestinationProps, object responseBody)
+        private void __responseHandlerFun(object o, IBasicProperties destinationProps, object responseBody)
         {
-            Message msg = new Message();
+            Message msg = endpoint.Message();
+            msg.properties.ContentEncoding = "UTF8";
             msg.StringBody = JsonConvert.SerializeObject(responseBody);
-            endpoint.SendTo(msg, DestinationProps.ReplyTo);
+            
+            endpoint.SendTo(msg, destinationProps.ReplyTo);
         }
         #endregion
         #endregion
