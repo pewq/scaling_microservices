@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using scaling_microservices;
 using scaling_microservices.Rabbit;
+using discovery_service;
 
 
 namespace client_service
@@ -49,8 +50,5 @@ namespace client_service
             endpoint.SendTo(registerReq, DiscoveryService.QueueName);
         }
 
-        protected override void ProcessRequest(QueueRequest request)
-        {
-        }
     }
 }
