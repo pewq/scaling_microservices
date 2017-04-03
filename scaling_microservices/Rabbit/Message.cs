@@ -16,6 +16,11 @@ namespace scaling_microservices.Rabbit
         {
             get
             {
+                if(properties.ContentEncoding == QueueRequest.classname)
+                {
+                    //TODO: either deserialize or throw
+                    return "QueueRequest";
+                }
                 switch (properties.ContentEncoding)
                 {
                     case "UTF8":
