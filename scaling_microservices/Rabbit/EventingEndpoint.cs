@@ -28,8 +28,18 @@ namespace scaling_microservices.Rabbit
 
         private void ThisInit()
         {
-            consumer = new EventingBasicConsumer(channel);
-            consumer.Received += Consumer_Received;
+            try
+            {
+                var ch = channel;
+                consumer = new EventingBasicConsumer(ch);
+                consumer.Received += Consumer_Received;
+                channel.BasicConsume(base.InQueue, false, "", false, true, null, consumer);
+            }
+            catch(Exception e)
+            {
+                Console.Write(e.Message);
+            }
+
         }
 
         private void Consumer_Received(object sender, BasicDeliverEventArgs e)
