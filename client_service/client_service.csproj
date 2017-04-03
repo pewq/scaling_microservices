@@ -56,7 +56,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\packages\RabbitMQ.Client.4.1.2\lib\net451\RabbitMQ.Client.dll</HintPath>
+      <HintPath>..\packages\RabbitMQ.Client.4.1.3\lib\net451\RabbitMQ.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -95,6 +95,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\discovery_service\discovery_service.csproj">
+      <Project>{a06ea1c1-f792-4575-83ba-85e04fdd3f0d}</Project>
+      <Name>discovery_service</Name>
+    </ProjectReference>
     <ProjectReference Include="..\scaling_microservices\scaling_microservices.csproj">
       <Project>{b5d6fde9-7b80-48e3-a687-f47667d0d053}</Project>
       <Name>scaling_microservices</Name>
