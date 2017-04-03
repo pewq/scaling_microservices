@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Owin.Hosting;
 
 namespace discovery_service
 {
@@ -10,6 +7,13 @@ namespace discovery_service
     {
         static void Main(string[] args)
         {
+            DiscoveryService.Instance.GetType();
+            var baseAddr = "http://localhost:5133";
+            using (WebApp.Start<Startup>(baseAddr))
+            {
+                Console.WriteLine("press enter");
+                Console.ReadLine();
+            }
         }
     }
 }
