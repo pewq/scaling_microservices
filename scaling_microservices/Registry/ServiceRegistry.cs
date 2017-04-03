@@ -64,15 +64,15 @@ namespace scaling_microservices.Registry
             RegistryEntry entry = new RegistryEntry()
                 { Id = id, Address = address, Token = token, ServiceType = type };
             //todo : maybe change later to this.Contains
-            RegistryEntry item = items.Find(x => x == entry);
-            if(item != null)
-            {
-                item.Reset();
-            }
-            else
+            var item = items.Find(x => x == entry);
+            if(ReferenceEquals(item, null))
             {
                 items.Add(entry);
                 entry.Reset();
+            }
+            else
+            {
+                item.Reset();
             }
             this.RecalculateTimer();
         }
