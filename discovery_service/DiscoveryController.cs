@@ -80,3 +80,4 @@ namespace discovery_service
         }
     }
 }
+//TODO : provide port of webapp using Request.RequestUri.Port.ToString();
