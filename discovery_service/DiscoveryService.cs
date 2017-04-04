@@ -49,6 +49,15 @@ namespace discovery_service
             this.Handlers.Add("register", (RequestHandleDelegate)registerHandler);
             this.Handlers.Add("get_services", (RequestHandleDelegate)getServicesHandler);
             this.Handlers.Add("get_all_data", (RequestHandleDelegate)pingHandler);
+            this.Handlers.Add("is_alive", (RequestHandleDelegate)isAliveHandler);
+            registerToClient();
+        }
+
+        private void registerToClient()
+        {
+            var req = new QueueRequest() { method = "register_discovery" };
+            req.arguments.Add("address", this.endpoint.InQueue);
+            endpoint.SendTo(req, client_service.ClientService.QueueName);
         }
 
         #region Handlers
@@ -115,6 +124,17 @@ namespace discovery_service
                 OnException(e, req);
             }
         }
+        private void isAliveHandler(QueueRequest req)
+        {
+            try
+            {
+                OnResponse(req.properties, new { is_alive = "true" });
+            }
+            catch (Exception e)
+            {
+                OnException(e, req);
+            }
+        }
         #endregion
 
         #region OnException
@@ -127,3 +147,5 @@ namespace discovery_service
         #endregion
     }
 }
+//TODO: controller should send it's address on register;
+//discovery should register to client service on creation of endpoint;
