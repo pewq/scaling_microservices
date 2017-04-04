@@ -99,6 +99,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\client_service\client_service.csproj">
+      <Project>{0aa49553-d327-446c-ab62-cda5c5e2777a}</Project>
+      <Name>client_service</Name>
+    </ProjectReference>
     <ProjectReference Include="..\scaling_microservices\scaling_microservices.csproj">
       <Project>{b5d6fde9-7b80-48e3-a687-f47667d0d053}</Project>
       <Name>scaling_microservices</Name>

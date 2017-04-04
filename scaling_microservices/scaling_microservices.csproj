@@ -94,6 +94,7 @@
     <Compile Include="IService.cs" />
     <Compile Include="Rabbit\EventingEndpoint.cs" />
     <Compile Include="Rabbit\IEndpoint.cs" />
+    <Compile Include="Rabbit\QueueResponse.cs" />
     <Compile Include="Rabbit\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rabbit\SubscriptionEndpoint.cs" />

@@ -86,19 +86,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientController.cs" />
     <Compile Include="ClientService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\discovery_service\discovery_service.csproj">
-      <Project>{a06ea1c1-f792-4575-83ba-85e04fdd3f0d}</Project>
-      <Name>discovery_service</Name>
-    </ProjectReference>
     <ProjectReference Include="..\scaling_microservices\scaling_microservices.csproj">
       <Project>{b5d6fde9-7b80-48e3-a687-f47667d0d053}</Project>
       <Name>scaling_microservices</Name>
