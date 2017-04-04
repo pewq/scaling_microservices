@@ -36,5 +36,16 @@ namespace scaling_microservices.Rabbit
             var msg = subscription.Next();
             return new Message() { properties = msg.BasicProperties, body = msg.Body };
         }
+
+        public QueueResponse Recieve(int msTimeout)
+        {
+            RabbitMQ.Client.Events.BasicDeliverEventArgs outRes;
+            var flag = subscription.Next(msTimeout, out outRes);
+            if(flag)
+            {
+                var resp = new QueueResponse(outRes.Body, outRes.BasicProperties);
+            }
+            return null;
+        }
     }
 }
