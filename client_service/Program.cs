@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
+using Microsoft.Owin.Hosting;
 
 namespace client_service
 {
@@ -11,7 +9,8 @@ namespace client_service
         static void Main(string[] args)
         {
             var service = new ClientService();
-            //service.Start();
+            var baseAddr = "http://localhost:5555";
+            var a = WebApp.Start<Startup>(baseAddr);
             Thread.Sleep(-1);
         }
     }
