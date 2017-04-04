@@ -73,10 +73,17 @@ namespace scaling_microservices.Rabbit
         //handle for endpoint recieved
         private void Endpoint_OnRecieved(object sender, Message e)
         {
-            if (e.Encoding == typeof(QueueRequest).ToString())
+            if (e.Encoding == QueueRequest.classname)
             {
                 QueueRequest request = new QueueRequest(e.body, e.properties);
                 OnRequest(request);
+            }
+            else if(e.Encoding == QueueResponse.classname)
+            {
+                var response = new QueueResponse(e.body, e.properties);
+                //TODO: determine what to do with response recieved
+                //actually, this should never happpen, because, response should be directly
+                //routed to the controller
             }
             else Console.WriteLine(e.StringBody);
         }
