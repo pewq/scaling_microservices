@@ -108,18 +108,10 @@ namespace scaling_microservices.Rabbit
             return properties;
         }
 
-        public IBasicProperties SendTo(QueueRequest request, string toQName)
+        public IBasicProperties SendTo(QueueRequest request, string routing, string exchange = "")
         {
             var properties = CreateBasicProperties(ReplyTo: this.InQueue,
                 Encoding: QueueRequest.classname);
-            channel.BasicPublish("", toQName, properties, request.ToByteArray());
-            return properties;
-        }
-
-        public IBasicProperties SendToExchange(QueueRequest request, string exchange, string routing)
-        {
-            var properties = CreateBasicProperties();
-            properties.ContentEncoding = QueueRequest.classname;
             channel.BasicPublish(exchange, routing, properties, request.ToByteArray());
             return properties;
         }
