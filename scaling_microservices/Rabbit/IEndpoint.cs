@@ -100,11 +100,11 @@ namespace scaling_microservices.Rabbit
             channel.BasicPublish("", msg.properties.ReplyTo, props, msg.body);
         }
 
-        public IBasicProperties SendTo(Message msg, string toQName)
+        public IBasicProperties SendTo(Message msg, string routing, string exchange = "")
         {
             var properties = CreateBasicProperties();
             properties.ContentEncoding = msg.Encoding;
-            channel.BasicPublish("", toQName, properties, msg.body);
+            channel.BasicPublish(exchange, routing, properties, msg.body);
             return properties;
         }
 
@@ -113,15 +113,6 @@ namespace scaling_microservices.Rabbit
             var properties = CreateBasicProperties(ReplyTo: this.InQueue,
                 Encoding: QueueRequest.classname);
             channel.BasicPublish(exchange, routing, properties, request.ToByteArray());
-            return properties;
-        }
-
-        public IBasicProperties SendToExchange(Message msg, string exchange, string routing)
-        {
-            var properties = CreateBasicProperties();
-            //TODO : prevent Encoding from getting from undefined properties
-            properties.ContentEncoding = msg.Encoding;
-            channel.BasicPublish(exchange, routing, properties, msg.body);
             return properties;
         }
         
