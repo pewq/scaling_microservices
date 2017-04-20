@@ -48,8 +48,12 @@ namespace scaling_microservices.Rabbit
                 if (properties != null)
                 {
                     properties.ContentEncoding = "UTF8";
+                    body = System.Text.Encoding.UTF8.GetBytes(value);
                 }
-                body = System.Text.Encoding.UTF8.GetBytes(value);
+                else
+                {
+                    throw new NullReferenceException("properties of Message object were not set");
+                }
             }
         }
 

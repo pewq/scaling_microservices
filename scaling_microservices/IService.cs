@@ -113,6 +113,7 @@ namespace scaling_microservices.Rabbit
 
         private void __responseHandlerFun(object o, IBasicProperties destinationProps, object responseBody)
         {
+
             Message msg = endpoint.Message();
             msg.properties.ContentEncoding = "UTF8";
             msg.StringBody = JsonConvert.SerializeObject(responseBody);

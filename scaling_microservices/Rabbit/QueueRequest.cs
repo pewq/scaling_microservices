@@ -61,7 +61,7 @@ namespace scaling_microservices.Rabbit
             {
                 return arguments[key];
             }
-            private set
+            set
             {
                 arguments[key] = value;
             }

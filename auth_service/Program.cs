@@ -8,10 +8,10 @@ namespace client_service
     {
         static void Main(string[] args)
         {
-            var service = new AuthService();
-            var baseAddr = "http://localhost:5555";
-            var a = WebApp.Start<Startup>(baseAddr);
-            Thread.Sleep(-1);
+            //var service = new AuthService();
+            //var baseAddr = "http://localhost:5555";
+            //var a = WebApp.Start<Startup>(baseAddr);
+            //Thread.Sleep(-1);
         }
     }
 }

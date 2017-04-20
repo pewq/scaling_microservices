@@ -16,7 +16,7 @@ namespace discovery_service
     {
         private ServiceRegistry registry;
 
-        private DiscoveryService(string queueName) : base(queueName)
+        public DiscoveryService(string queueName) : base(queueName)
         {
             this.registry = new ServiceRegistry();
             ThisInit();
@@ -48,7 +48,7 @@ namespace discovery_service
             this.Handlers.Add("ping", (RequestHandleDelegate)pingHandler);
             this.Handlers.Add("register", (RequestHandleDelegate)registerHandler);
             this.Handlers.Add("get_services", (RequestHandleDelegate)getServicesHandler);
-            this.Handlers.Add("get_all_data", (RequestHandleDelegate)pingHandler);
+            this.Handlers.Add("get_all_data", (RequestHandleDelegate)getAllHandler);
             this.Handlers.Add("is_alive", (RequestHandleDelegate)isAliveHandler);
             registerToClient();
         }
@@ -69,7 +69,7 @@ namespace discovery_service
                 string token = req["token"];
                 registry.Ping(name, token);
 
-                OnResponse(req.properties, new { });
+                OnResponse(req.properties, new { status = 200});
             }
             catch (Exception e)
             {

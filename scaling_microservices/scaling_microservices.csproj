@@ -353,6 +353,7 @@
   <ItemGroup>
     <Compile Include="EventDictionary.cs" />
     <Compile Include="IService.cs" />
+    <Compile Include="Proxy\DiscoveryProxy.cs" />
     <Compile Include="Proxy\IProxy.cs" />
     <Compile Include="Rabbit\EventingEndpoint.cs" />
     <Compile Include="Rabbit\IEndpoint.cs" />
