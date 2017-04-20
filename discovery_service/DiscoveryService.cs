@@ -14,6 +14,8 @@ namespace discovery_service
     /// send_message(message)
     public class DiscoveryService : IService
     {
+        const int statusOK = 200;
+
         private ServiceRegistry registry;
 
         public DiscoveryService(string queueName) : base(queueName)
@@ -69,7 +71,7 @@ namespace discovery_service
                 string token = req["token"];
                 registry.Ping(name, token);
 
-                OnResponse(req.properties, new { status = 200});
+                OnResponse(req.properties, new { status = statusOK});
             }
             catch (Exception e)
             {
@@ -88,7 +90,7 @@ namespace discovery_service
 
                 registry.Add(name, address, token, type);
 
-                OnResponse(req.properties, new { });
+                OnResponse(req.properties, new { status = statusOK });
             }
             catch (Exception e)
             {
@@ -128,7 +130,7 @@ namespace discovery_service
         {
             try
             {
-                OnResponse(req.properties, new { is_alive = "true" });
+                OnResponse(req.properties, new { is_alive = true });
             }
             catch (Exception e)
             {

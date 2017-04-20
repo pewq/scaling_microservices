@@ -16,8 +16,9 @@ namespace test_project
             var service = new DiscoveryService("disc_queue");
             var proxy = new scaling_microservices.Proxy.DiscoveryProxy("disc_queue");
             proxy.Register("main", "addr", "erwer", "type t");
-            var svcs = proxy.GetServices();
-            Console.WriteLine(svcs[0]);
+            proxy.Register("main1", "addr1", "erwer1", "type t1");
+            var svcs = proxy.GetAllData();
+            Console.WriteLine(svcs);
             Console.ReadLine();
 
             

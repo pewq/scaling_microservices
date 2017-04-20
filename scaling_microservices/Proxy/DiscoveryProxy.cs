@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
 using scaling_microservices.Rabbit;
 using Newtonsoft.Json;
 
@@ -12,10 +8,11 @@ namespace scaling_microservices.Proxy
     public class DiscoveryProxy : IProxy
     {
         const int responseTimeout = 100;
-        public DiscoveryProxy(string queue) : base(queue,"")
-        {
+        public DiscoveryProxy(string route) : base(route,"")
+        { }
 
-        }
+        public DiscoveryProxy(string route, string exchange) : base(route, exchange)
+        { }
 
         public void Ping(string name, string token)
         {
@@ -37,6 +34,17 @@ namespace scaling_microservices.Proxy
             endpoint.Recieve();
         }
 
+        //public void Register(IService instance)
+        //{
+        //    var request = new QueueRequest() { method = "register" };
+        //    request["name"] = instance.name;
+        //    request["address"] = address;
+        //    request["token"] = token;
+        //    request["type"] = type;
+        //    this.Send(request);
+        //    endpoint.Recieve();
+        //}
+
         public List<string> GetServices()
         {
             var request = new QueueRequest() { method = "get_services" };
@@ -45,18 +53,24 @@ namespace scaling_microservices.Proxy
             return JsonConvert.DeserializeObject<List<string>>(msg.StringBody);
         }
 
+        public List<object> GetData()
+        {
+            var request = new QueueRequest() { method = "get_all_data" };
+            this.Send(request);
+            var msg = endpoint.Recieve();
+            var template = new { };
+            var a = JsonConvert.DeserializeObject<Dictionary<string,DateTime>>(msg.StringBody);
+            return new List<object>();//TODO : fix this
+        }
+
+
         public bool IsAlive()
         {
             var request = new QueueRequest() { method = "is_alive" };
             this.Send(request);
             var msg = endpoint.Recieve();
-
+            var template = new { is_alive = true };
+            return JsonConvert.DeserializeAnonymousType(msg.StringBody, template).is_alive;
         }
-        /// get_services()
-        /// get_all_data()
-        /// ping(name,token)
-        /// register(name,address,token,type)
-        /// is_alive()
-
     }
 }
