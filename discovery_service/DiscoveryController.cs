@@ -3,6 +3,7 @@ using System.Web.Http;
 using RabbitMQ.Client;
 using Newtonsoft.Json;
 using scaling_microservices.Rabbit;
+using scaling_microservices.Auth;
 
 namespace discovery_service
 {
@@ -18,7 +19,6 @@ namespace discovery_service
 
             endpoint = new SubscriptionEndpoint(factory);
         }
-
 
         [HttpGet]
         [ActionName("services")]
@@ -53,23 +53,49 @@ namespace discovery_service
                 return new System.Web.Http.Results.ExceptionResult(e, this);
             }
         }
-
+        
         [HttpPost]
         [ActionName("ping")]
-        public IHttpActionResult Ping([FromUri] string id)
+        [ServiceAuthorization("authservice")]
+        public IHttpActionResult Ping([FromUri] string name, [FromUri] string token)
         {
             try
             {
                 var request = new QueueRequest() { method = "ping" };
-                request.arguments.Add("name", id);
-                endpoint.SendTo(request, DiscoveryService.QueueName);
-                var endpResponse = JsonConvert.DeserializeObject(endpoint.Recieve().StringBody);
-                if (endpResponse.GetType().GetField("error") != null)
-                {
-                    throw new Exception(endpResponse.GetType().GetField("message").GetValue(endpResponse).ToString());
-                }
+                request["name"] = name;
+                request["token"] = token;
                 //Access discovery service
-                return new System.Web.Http.Results.StatusCodeResult(System.Net.HttpStatusCode.OK, this);
+                endpoint.SendTo(request, DiscoveryService.QueueName);
+                var endpointResponseBody = endpoint.Recieve().StringBody;
+                var statusTemplate = new { status = System.Net.HttpStatusCode.OK };
+                //try to extract status
+                try
+                {
+                    var exStatus = JsonConvert.DeserializeAnonymousType(endpointResponseBody, statusTemplate).status;
+                    if(exStatus == System.Net.HttpStatusCode.OK)
+                    {
+                        return new System.Web.Http.Results.StatusCodeResult(System.Net.HttpStatusCode.OK, this);
+                    }
+                    if(exStatus == System.Net.HttpStatusCode.NotFound)
+                    {
+                        //TODO : extract and send message field
+                        var actionResult = new System.Web.Http.Results.NotFoundResult(this);
+                    }
+                }
+                catch (Exception e)
+                {
+                    //handle incorrect response
+                }
+                var errorTemplate = new { error = "" };
+                try
+                {
+                    var exError = JsonConvert.DeserializeAnonymousType(endpointResponseBody, errorTemplate).error;
+                    return new System.Web.Http.Results.ExceptionResult(new Exception(exError), this);
+                }
+                catch(Exception e)
+                {
+                    return new System.Web.Http.Results.ExceptionResult(e, this);
+                }
             }
             catch (Exception e)
             {

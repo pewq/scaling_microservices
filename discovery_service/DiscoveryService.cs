@@ -69,9 +69,14 @@ namespace discovery_service
             {
                 string name = req["name"];
                 string token = req["token"];
-                registry.Ping(name, token);
-
-                OnResponse(req.properties, new { status = statusOK});
+                if (registry.Ping(name, token))
+                { 
+                    OnResponse(req.properties, new { status = System.Net.HttpStatusCode.OK });
+                }
+                else
+                {
+                    OnResponse(req.properties, new { status = System.Net.HttpStatusCode.NotFound , message = "service was not registered or timed out" });
+                }
             }
             catch (Exception e)
             {
