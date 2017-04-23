@@ -13,12 +13,12 @@ namespace test_project
     {
         static void Main(string[] args)
         {
-            var service = new DiscoveryService("disc_queue");
-            var proxy = new scaling_microservices.Proxy.DiscoveryProxy("disc_queue");
+//            var service = new DiscoveryService(DIs);
+            var proxy = new scaling_microservices.Proxy.DiscoveryProxy(DiscoveryService.QueueName);
             proxy.Register("main", "addr", "erwer", "type t");
             proxy.Register("main1", "addr1", "erwer1", "type t1");
-            var svcs = proxy.GetAllData();
-            Console.WriteLine(svcs);
+            proxy.Ping("main", "erwer");
+            
             Console.ReadLine();
 
             
