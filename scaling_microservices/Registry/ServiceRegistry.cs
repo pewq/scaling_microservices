@@ -50,13 +50,14 @@ namespace scaling_microservices.Registry
 
         public const int DefaultTimeout = 60;
 
-        public void Ping(string id, string token)
+        public bool Ping(string id, string token)
         {
             token = "";//todo : implement service tokens
             var item = items.Find( x => 
                 ( x == new RegistryEntry() { Id = id, Token = token })
             );
-            item.Reset();
+            item?.Reset();
+            return (!ReferenceEquals(item, null));
         }
 
         public void Add(string id, string address, string token, string type)
