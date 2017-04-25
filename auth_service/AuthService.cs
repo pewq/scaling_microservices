@@ -1,10 +1,12 @@
 ﻿using System;
 using scaling_microservices.Rabbit;
+using scaling_microservices.Auth.Tokens;
 
 namespace auth_service
 {
-    class AuthService : IService
+    public class AuthService : IService
     {
+        TokenStore storage = new TokenStore();
         public AuthService() : base()
         {
             ThisInit();
@@ -20,33 +22,49 @@ namespace auth_service
         private void ThisInit()
         {
             //Init db here;
+            this.Handlers.Add("authenticate", (RequestHandleDelegate)AuthenticationHandler);
+            this.Handlers.Add("authorize", (RequestHandleDelegate)AuthorizationHandler);
+            this.Handlers.Add("validate", (RequestHandleDelegate)ValidateTokenHandler);
         }
 
-        private string handleBasicAuth(string token)
+        private int handleBasicAuth(string token)
         {
-            return "";
+            return 1;
         }
-        private string handleCredentialAuth(string login, string password)
+
+        private TokenEntity handleCredentialBasicAuth(string login, string password)
         {
-            return "";
+            //Get user id by login and password
+            //or return null
+            return storage.GenerateToken(login.GetHashCode());
+        }
+
+        private int handleCredentialAuth(string login, string password)
+        {
+            return 1;
         }
 
         private void AuthenticationHandler(QueueRequest req)
         {
             try
             {
-                string authType = req["authentication"];
-                string retValue = "";
+                string authType = req["type"];
+                TokenEntity userToken = null;
                 switch(authType.ToLower())
                 {
+                    case "token":
+                        {
+                            //handle available token
+                            break;
+                        }
                     case "basic":
                         {
-                            retValue = handleBasicAuth(req["token"]);
+                            userToken = handleCredentialBasicAuth(req["login"], req["password"]);
                             break;
                         }
                     case "credential":
                         {
-                            retValue = handleCredentialAuth(req["logoin"], req["password"]);
+                           // userToken = handleCredentialAuth(req["login"], req["password"]);
                             break;
                         }
                     default:
@@ -54,7 +72,7 @@ namespace auth_service
                             throw new Exception("Invalid authentication type");
                         }
                 }
-                OnResponse(req.properties, retValue);
+                OnResponse(req.properties, userToken);
             }
             catch(Exception e)
             {
@@ -66,13 +84,28 @@ namespace auth_service
         {
             try
             {
-                var success = authenticate(req["token"]);
-                OnResponse(req.properties, success);
+                bool success = storage.ValidateToken(req["token"]);
+                OnResponse(req.properties,new { status = success });
             }
             catch (Exception e)
             {
                 OnException(e, req);
             }
+        }
+
+        private void ValidateTokenHandler(QueueRequest req)
+        {
+
+        }
+
+        private void UpdateTokenHandler(QueueRequest req)
+        {
+
+        }
+
+        private void UpdateToken(string token)
+        {
+
         }
     }
 }

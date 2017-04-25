@@ -2,16 +2,14 @@
 using System.Threading;
 using Microsoft.Owin.Hosting;
 
-namespace client_service
+namespace auth_service
 {
     class Program
     {
         static void Main(string[] args)
         {
-            //var service = new AuthService();
-            //var baseAddr = "http://localhost:5555";
-            //var a = WebApp.Start<Startup>(baseAddr);
-            //Thread.Sleep(-1);
+            var service = new AuthService("authservice");
+            Thread.Sleep(-1);
         }
     }
 }
