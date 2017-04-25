@@ -83,7 +83,7 @@ namespace discovery_service
                         var actionResult = new System.Web.Http.Results.NotFoundResult(this);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //handle incorrect response
                 }

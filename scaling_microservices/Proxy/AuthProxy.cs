@@ -32,7 +32,7 @@ namespace scaling_microservices.Proxy
             {
                 return JsonConvert.DeserializeObject<TokenEntity>(msg.StringBody);
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 return null;
             }
