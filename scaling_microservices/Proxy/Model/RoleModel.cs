@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace scaling_microservices.Proxy.Model
 {
     public class RoleModel
     {
-        string Name { get; set; }
-        string Owner { get; set; }
-        List<UserModel> Participants { get; set; } = new List<UserModel>();
+        public int RoleId { get; set; }
+        public string Name { get; set; }
+        public string Owner { get; set; }
+        public List<UserModel> Participants { get; set; } = new List<UserModel>();
     }
 }

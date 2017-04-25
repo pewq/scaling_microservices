@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace scaling_microservices.Proxy.Model
+﻿namespace scaling_microservices.Proxy.Model
 {
     public class UserModel
     {
-        int UserId { get; set; }
-        string Name { get; set; }
-        string Email { get; set; }
+        public int UserId { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
     }
 }
