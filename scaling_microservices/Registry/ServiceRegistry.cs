@@ -60,10 +60,10 @@ namespace scaling_microservices.Registry
             return (!ReferenceEquals(item, null));
         }
 
-        public void Add(string id, string address, string token, string type)
+        public void Add(string id, string address, string token, string type, string owner)
         {
             RegistryEntry entry = new RegistryEntry()
-                { Id = id, Address = address, Token = token, ServiceType = type };
+                { Id = id, Address = address, Token = token, ServiceType = type, Owner = owner };
             //todo : maybe change later to this.Contains
             var item = items.Find(x => x == entry);
             if(ReferenceEquals(item, null))

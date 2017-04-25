@@ -7,7 +7,7 @@ namespace scaling_microservices.Proxy
 {
     public class DiscoveryProxy : IProxy
     {
-        const int responseTimeout = 100;
+        //const int responseTimeout = 100;
         public DiscoveryProxy(string route) : base(route,"")
         { }
 
@@ -23,13 +23,14 @@ namespace scaling_microservices.Proxy
             endpoint.Recieve();
         }
 
-        public void Register(string name, string address, string token, string type)
+        public void Register(string name, string address, string token, string type, string owner)
         {
             var request = new QueueRequest() { method = "register" };
             request["name"] = name;
             request["address"] = address;
             request["token"] = token;
             request["type"] = type;
+            request["owner"] = owner;
             this.Send(request);
             endpoint.Recieve();
         }

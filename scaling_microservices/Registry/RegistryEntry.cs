@@ -17,6 +17,8 @@ namespace scaling_microservices.Registry
         //TODO : maybe extract enum ServiceType
         public string ServiceType { get; set; }
 
+        public string Owner { get; set; }
+
         public DateTime? Expiry { get; private set; } //TODO : is this really needed?
 
         static private bool EqualOrNone(string left, string right)
@@ -69,7 +71,7 @@ namespace scaling_microservices.Registry
 
         public static bool operator == (RegistryEntry first, RegistryEntry second)
         {
-            return (first.Id == second.Id && first.Address == second.Address) &&           
+            return (first.Id == second.Id && first.Address == second.Address && first.Owner == second.Owner) &&           
                 EqualOrNone(first.ServiceType, second.ServiceType) &&
                 EqualOrNone(first.Token, second.Token);
         }

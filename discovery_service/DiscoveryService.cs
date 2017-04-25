@@ -92,8 +92,9 @@ namespace discovery_service
                 string token = req["token"];
                 string address = req["address"];
                 string type = req["type"];
+                string owner = req["owner"];
 
-                registry.Add(name, address, token, type);
+                registry.Add(name, address, token, type, owner);
 
                 OnResponse(req.properties, new { status = statusOK });
             }
