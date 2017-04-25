@@ -1,6 +1,6 @@
 ﻿using System.Security.Principal;
 
-namespace scaling_microservices.Auth
+namespace scaling_microservices.Auth.Identity
 {
     public class BasicAuthenticationIdentity : GenericIdentity
     {
