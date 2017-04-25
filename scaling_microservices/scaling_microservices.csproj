@@ -410,6 +410,7 @@
     <Compile Include="Auth\Tokens\TokenStore.cs" />
     <Compile Include="Auth\UAuthServices.cs" />
     <Compile Include="EventDictionary.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="IService.cs" />
     <Compile Include="Proxy\AuthProxy.cs" />
     <Compile Include="Proxy\ClientProxy.cs" />
@@ -417,6 +418,7 @@
     <Compile Include="Proxy\GroupProxy.cs" />
     <Compile Include="Proxy\IProxy.cs" />
     <Compile Include="Proxy\Model\GroupModel.cs" />
+    <Compile Include="Proxy\Model\GroupModel_simplified.cs" />
     <Compile Include="Proxy\Model\RoleModel.cs" />
     <Compile Include="Proxy\Model\UserModel.cs" />
     <Compile Include="Rabbit\EventingEndpoint.cs" />
