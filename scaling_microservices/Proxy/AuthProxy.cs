@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using scaling_microservices.Rabbit;
+using scaling_microservices.Auth.Tokens;
 
 namespace scaling_microservices.Proxy
 {
@@ -23,11 +20,28 @@ namespace scaling_microservices.Proxy
             return JsonConvert.DeserializeAnonymousType(msg.StringBody, template).status;
         }
 
-        public bool Authorize(string login, string password)
+        public TokenEntity BasicAuthenticate(string login, string password)
         {
-            var request = new QueueRequest() { method = "authorize" };
+            var request = new QueueRequest() { method = "authenticate" };
+            request["type"] = "basic";
             request["login"] = login;
             request["password"] = password;
+            Send(request);
+            var msg = endpoint.Recieve();
+            try
+            {
+                return JsonConvert.DeserializeObject<TokenEntity>(msg.StringBody);
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+        }
+
+        public bool ValidateToken(string token)
+        {
+            var request = new QueueRequest() { method = "validate" };
+            request["token"] = token;
             Send(request);
             var template = new { status = true };
             var msg = endpoint.Recieve();
