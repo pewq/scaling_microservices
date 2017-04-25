@@ -1,16 +1,14 @@
-﻿
+﻿using scaling_microservices.Auth.Identity;
+
 namespace scaling_microservices.Auth
 {
     class UAuthServices : IUAuthServices
     {
-        private readonly UserRepository repository;
-
-        /// <summary>
-        /// Public constructor.
-        /// </summary>
-        public UAuthServices(UserRepository repo)
+        //private readonly UserRepository repository;
+        
+        public UAuthServices(/*UserRepository repo*/)
         {
-            repository = repo;
+            //repository = repo;
         }
 
         /// <summary>
@@ -21,7 +19,7 @@ namespace scaling_microservices.Auth
         /// <returns></returns>
         public int Authenticate(string userName, string password)
         {
-            var user = repository.Get(u => u.UserName == userName && u.Password == password);
+            var user = new BasicAuthenticationIdentity("user", "pwd") { UserId = 1 };//repository.Get(u => u.UserName == userName && u.Password == password);
             if (user != null && user.UserId > 0)
             {
                 return user.UserId;
@@ -30,3 +28,4 @@ namespace scaling_microservices.Auth
         }
     }
 }
+//TODO : move this to auth service

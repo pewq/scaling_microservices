@@ -1,48 +1,34 @@
 ﻿using System.Threading;
 using System.Web.Http.Controllers;
 using scaling_microservices.Proxy;
+using scaling_microservices.Auth.Identity;
 
 namespace scaling_microservices.Auth
 {
-    public class ServiceAuthenticationAtrribute : GenericAuthenticationFilter
+    public class ServiceAuthenticationAttribute : GenericAuthenticationAttribute
     {
-        /// <summary>
-        /// Default Authentication Constructor
-        /// </summary>
-        public ServiceAuthenticationAtrribute()
+        private AuthProxy proxy;
+
+        public ServiceAuthenticationAttribute(string routing = "",
+            string exchange = "", bool isActive = true) : base(isActive)
         {
+            proxy = new AuthProxy(routing, exchange);
         }
 
-        /// <summary>
-        /// AuthenticationFilter constructor with isActive parameter
-        /// </summary>
-        /// <param name="isActive"></param>
-        public ServiceAuthenticationAtrribute(bool isActive)
-            : base(isActive)
-        {
-        }
-
-        /// <summary>
         /// Protected overriden method for authorizing user
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <param name="actionContext"></param>
-        /// <returns></returns>
         protected override bool OnAuthorizeUser(string username, string password, HttpActionContext actionContext)
         {
-            var provider = actionContext.ControllerContext.Configuration
-                               .DependencyResolver.GetService(typeof(UAuthServices)) as IUAuthServices;
-            if (provider != null)
+            var userToken = proxy.BasicAuthenticate(username, password);
+            if (userToken != null)
             {
-                var userId = provider.Authenticate(username, password);
-                if (userId > 0)
-                {
-                    var basicAuthenticationIdentity = Thread.CurrentPrincipal.Identity as BasicAuthenticationIdentity;
-                    if (basicAuthenticationIdentity != null)
-                        basicAuthenticationIdentity.UserId = userId;
-                    return true;
-                }
+                var basicAuthenticationIdentity = Thread.CurrentPrincipal.Identity as BasicAuthenticationIdentity;
+                if (basicAuthenticationIdentity != null)
+                    basicAuthenticationIdentity.UserId = userToken.UserId;
+                actionContext.Request.Headers.Add(ServiceAuthorizationAttribute.Token, userToken.AuthToken);
+                //actionContext.Request.Headers.Add("Expires", userToken.ExpiresOn.ToFileTime().ToString());
+                //actionContext.Response.Headers.Add(ServiceAuthorizationAttribute.Token, userToken.AuthToken);
+                //actionContext.Response.Headers.Add("Expires", userToken.ExpiresOn.ToFileTime().ToString());
+                return true;
             }
             return false;
         }
