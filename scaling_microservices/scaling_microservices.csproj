@@ -412,8 +412,13 @@
     <Compile Include="EventDictionary.cs" />
     <Compile Include="IService.cs" />
     <Compile Include="Proxy\AuthProxy.cs" />
+    <Compile Include="Proxy\ClientProxy.cs" />
     <Compile Include="Proxy\DiscoveryProxy.cs" />
+    <Compile Include="Proxy\GroupProxy.cs" />
     <Compile Include="Proxy\IProxy.cs" />
+    <Compile Include="Proxy\Model\GroupModel.cs" />
+    <Compile Include="Proxy\Model\RoleModel.cs" />
+    <Compile Include="Proxy\Model\UserModel.cs" />
     <Compile Include="Rabbit\EventingEndpoint.cs" />
     <Compile Include="Rabbit\IEndpoint.cs" />
     <Compile Include="Rabbit\QueueResponse.cs" />
