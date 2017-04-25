@@ -21,13 +21,6 @@ namespace scaling_microservices.Registry
 
         public DateTime? Expiry { get; private set; } //TODO : is this really needed?
 
-        static private bool EqualOrNone(string left, string right)
-        {
-            if (left == "" || right == "")
-                return true;
-            return left == right;
-        }
-
         public RegistryEntry(int offset = ServiceRegistry.DefaultTimeout)
         {
             Expiry = DateTime.Now.AddSeconds(offset);
@@ -72,8 +65,8 @@ namespace scaling_microservices.Registry
         public static bool operator == (RegistryEntry first, RegistryEntry second)
         {
             return (first.Id == second.Id && first.Address == second.Address && first.Owner == second.Owner) &&           
-                EqualOrNone(first.ServiceType, second.ServiceType) &&
-                EqualOrNone(first.Token, second.Token);
+                Helpers.EqualOrNone(first.ServiceType, second.ServiceType) &&
+                Helpers.EqualOrNone(first.Token, second.Token);
         }
 
         public static bool operator != (RegistryEntry first, RegistryEntry second)
