@@ -31,12 +31,12 @@ namespace scaling_microservices.Proxy
             return JsonConvert.DeserializeObject<UserModel>(endpoint.Recieve().StringBody);
         }
 
-        public bool AddUser(UserModel user)
+        public int AddUser(UserModel user)
         {
             var req = new QueueRequest() { method = "add_user" };
             req["user"] = JsonConvert.SerializeObject(user);
             Send(req);
-            return JsonConvert.DeserializeObject<bool>(endpoint.Recieve().StringBody);
+            return JsonConvert.DeserializeObject<int>(endpoint.Recieve().StringBody);
         }
 
         public bool EditUser(int userId, string userName = "", string userEmail = "")
