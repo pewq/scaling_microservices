@@ -429,10 +429,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rabbit\SubscriptionEndpoint.cs" />
     <Compile Include="Rabbit\QueueRequest.cs" />
-    <Compile Include="Registry\RegistryEntry.cs" />
-    <Compile Include="Registry\ServiceRegistry.cs" />
+    <Compile Include="Rabbit\Registry\RegistryEntry.cs" />
+    <Compile Include="Rabbit\Registry\ServiceRegistry.cs" />
     <Compile Include="Auth\ServiceAuthorizationAttribute.cs" />
     <Compile Include="Auth\ServiceAuthenticationAtrribute.cs" />
+    <Compile Include="StorageStub\GroupStorage.cs" />
+    <Compile Include="StorageStub\IStorage.cs" />
+    <Compile Include="StorageStub\RoleStorage.cs" />
+    <Compile Include="StorageStub\UserStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
