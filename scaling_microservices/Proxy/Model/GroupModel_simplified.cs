@@ -8,6 +8,6 @@ namespace scaling_microservices.Proxy.Model
         public string Name { get; set; }
         public string Owner { get; set; }
         public int Creator { get; set; }
-        public Dictionary<int, int> Participants { get; set; } = new Dictionary<int, int>();
+        public Dictionary<int,List<int>> Participants { get; set; } = new Dictionary<int,List<int>>();
     }
 }

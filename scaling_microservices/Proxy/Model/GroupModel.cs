@@ -8,7 +8,7 @@ namespace scaling_microservices.Proxy.Model
         public string Name { get; set; }
         public string Owner { get; set; }
         public UserModel Creator { get; set; }
-        public Dictionary<UserModel, RoleModel> Participants { get; set; } = new Dictionary<UserModel, RoleModel>();
+        public Dictionary<UserModel, List<RoleModel>> Participants { get; set; } = new Dictionary<UserModel, List<RoleModel>>();
 
         public GroupModel_simplified Simplify()
         {
@@ -19,7 +19,7 @@ namespace scaling_microservices.Proxy.Model
                 Owner = Owner,
                 Creator = Creator.UserId
             };
-            model.Participants = Participants.ToDictionary(x => x.Key.UserId, x => { return x.Value == null ? 0: x.Value.RoleId; });
+            model.Participants = Participants.ToDictionary(x => x.Key.UserId, x => { return x.Value.Select(v => v.RoleId).ToList(); });
             return model;
         }
     }
