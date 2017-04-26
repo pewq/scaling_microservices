@@ -420,6 +420,7 @@
     <Compile Include="Proxy\Model\GroupModel.cs" />
     <Compile Include="Proxy\Model\GroupModel_simplified.cs" />
     <Compile Include="Proxy\Model\RoleModel.cs" />
+    <Compile Include="Proxy\Model\RoleModel_simplified.cs" />
     <Compile Include="Proxy\Model\UserModel.cs" />
     <Compile Include="Rabbit\EventingEndpoint.cs" />
     <Compile Include="Rabbit\IEndpoint.cs" />
