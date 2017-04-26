@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "auth_service", "auth_servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_project", "test_project\test_project.csproj", "{FCE2A929-B125-44FD-AE4E-EDD708BE7174}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "group_service", "group_service\group_service.csproj", "{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
