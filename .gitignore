@@ -240,3 +240,5 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/scaling_microservices/App_Packages/TaskHelpers.Sources.0.3/TaskHelpers.cs
+/scaling_microservices/App_Packages/TaskHelpers.Sources.0.3/TaskHelpersExtensions.cs
