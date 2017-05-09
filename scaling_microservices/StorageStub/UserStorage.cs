@@ -15,26 +15,20 @@ namespace scaling_microservices.StorageStub
             this.Add(new UserModel()
             {
                 UserId = 1,
-                Login = "first_user",
                 Password = "first_password",
-                Email = "first@example.com",
-                Name = "first!",
+                UserName = "first!",
             });
             this.Add(new UserModel()
             {
                 UserId = 2,
-                Login = "second_user",
                 Password = "second_password",
-                Email = "second@example.com",
-                Name = "second!",
+                UserName = "second!",
             });
             this.Add(new UserModel()
             {
                 UserId = 3,
-                Login = "third_user",
                 Password = "third_password",
-                Email = "third@example.com",
-                Name = "3!",
+                UserName = "3!",
             });
         }
 
