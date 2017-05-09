@@ -81,6 +81,7 @@ namespace discovery_service
                     {
                         //TODO : extract and send message field
                         var actionResult = new System.Web.Http.Results.NotFoundResult(this);
+                        return actionResult;
                     }
                 }
                 catch (Exception)

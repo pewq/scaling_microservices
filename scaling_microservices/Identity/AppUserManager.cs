@@ -15,10 +15,6 @@ namespace scaling_microservices.Identity
             var manager = new AppUserManager(
                 new AppUserStore(context.Get<AppUserDbContext>()));
 
-            manager.UserValidator = new UserValidator<AppUser, int>(manager)
-            {
-                
-            }
             // optionally configure your manager
             // ...
 
@@ -27,8 +23,7 @@ namespace scaling_microservices.Identity
 
         public AppUser Find(string login, string owner)
         {
-            this.Store.FindByNameAsync(login);
-            return new AppUser();
+            return this.Store.FindByNameAsync(login).Result;
         }
     }
 }

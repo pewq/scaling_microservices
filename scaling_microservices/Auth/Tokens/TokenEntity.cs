@@ -19,7 +19,7 @@ namespace scaling_microservices.Auth.Tokens
             AuthToken = t.AuthToken;
             IssuedOn = t.IssuedOn;
             ExpiresOn = t.ExpiresOn;
-            Roles = t.Roles.ToArray();
+            Roles = t.Roles?.ToArray();
         }
     }
 }
