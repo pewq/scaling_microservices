@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using StackExchange.Redis;
+using Newtonsoft.Json;
 
 namespace scaling_microservices.Auth.Tokens
 {
@@ -8,14 +8,20 @@ namespace scaling_microservices.Auth.Tokens
     {
         const int ExpiryTimeOffset = 3600;
 
-        RedisKeyValueStorage storage;
+        RedisTokenStorage storage;
 
         public TokenStore()
         {
-            storage = new RedisKeyValueStorage();
+            storage = new RedisTokenStorage();
         }
 
-        public TokenEntity GenerateToken(int userId)
+
+        public bool Add(string userId, string token, string[] roles = null, int offset = ExpiryTimeOffset)
+        {
+            return storage.Set(userId, token, roles, offset).Result;
+        }
+
+        public TokenEntity GenerateToken(int userId, string[] roles = null)
         {
             Task<bool> task;
             string tokenData = storage.Get(userId.ToString()).Result;
@@ -28,12 +34,12 @@ namespace scaling_microservices.Auth.Tokens
             if(tokenData != null)
             {
                 token.AuthToken = tokenData;
-                task = storage.UpdateKeyExpiry(userId.ToString());
+                task = storage.UpdateExpiryById(userId.ToString());
             }
             else
             {
                 token.AuthToken = Guid.NewGuid().ToString();
-                task = storage.Set(userId.ToString(), token.AuthToken, ExpiryTimeOffset);
+                task = storage.Set(userId, token.AuthToken, roles, ExpiryTimeOffset);
             }
             if(!task.Result)
             {
@@ -54,7 +60,7 @@ namespace scaling_microservices.Auth.Tokens
 
         public bool ValidateToken(string tokenId)
         {
-            return storage.UpdateValueExpiry(tokenId).Result;
+            return storage.UpdateExpiryByToken(tokenId).Result;
         }
     }
 }

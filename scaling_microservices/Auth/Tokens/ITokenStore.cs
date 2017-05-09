@@ -8,7 +8,7 @@ namespace scaling_microservices.Auth.Tokens
 {
     public interface ITokenStore
     {
-        TokenEntity GenerateToken(int userId);
+        TokenEntity GenerateToken(int userId, string[] roles = null);
 
         bool ValidateToken(string tokenId);
         

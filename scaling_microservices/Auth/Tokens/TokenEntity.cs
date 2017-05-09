@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Linq;
 namespace scaling_microservices.Auth.Tokens
 {
     public class TokenEntity
@@ -9,6 +9,8 @@ namespace scaling_microservices.Auth.Tokens
         public DateTime IssuedOn { get; set; }
         public DateTime ExpiresOn { get; set; }
 
+        public string[] Roles { get; set; }
+
         public TokenEntity() { }
 
         public TokenEntity(TokenEntity t)
@@ -17,6 +19,7 @@ namespace scaling_microservices.Auth.Tokens
             AuthToken = t.AuthToken;
             IssuedOn = t.IssuedOn;
             ExpiresOn = t.ExpiresOn;
+            Roles = t.Roles.ToArray();
         }
     }
 }
