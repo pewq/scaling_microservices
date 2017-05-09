@@ -1,5 +1,6 @@
 ﻿using System;
 using scaling_microservices.Auth.Tokens;
+using scaling_microservices.Proxy;
 using System.Linq;
 
 namespace test_project
@@ -8,8 +9,9 @@ namespace test_project
     {
         static void Main(string[] args)
         {
-            var endpoint = new scaling_microservices.Rabbit.SubscriptionEndpoint();
-            endpoint.CreateBasicProperties();
+            var proxy = new AuthProxy("authservice", "");
+            var status = proxy.Register("default", "default", "");
+            Console.WriteLine(status);
             Console.ReadLine();
         }
     }
