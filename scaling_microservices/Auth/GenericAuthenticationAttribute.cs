@@ -35,8 +35,7 @@ namespace scaling_microservices.Auth
                 ChallengeAuthRequest(filterContext);
                 return;
             }
-            var genericPrincipal = new GenericPrincipal(identity, null);
-            Thread.CurrentPrincipal = genericPrincipal;
+            Thread.CurrentPrincipal = new GenericPrincipal(identity, null);
             if (!OnAuthorizeUser(identity.Name, identity.Password, filterContext))
             {
                 ChallengeAuthRequest(filterContext);
@@ -54,7 +53,7 @@ namespace scaling_microservices.Auth
         }
 
         /// Checks for autrhorization header in the request and parses it, creates user credentials and returns as BasicAuthenticationIdentity
-        protected virtual BasicAuthenticationIdentity FetchAuthHeader(HttpActionContext filterContext)
+        protected virtual AuthenticationIdentity FetchAuthHeader(HttpActionContext filterContext)
         {
             string authHeaderValue = null;
             var authRequest = filterContext.Request.Headers.Authorization;
@@ -64,7 +63,7 @@ namespace scaling_microservices.Auth
                 return null;
             authHeaderValue = Encoding.Default.GetString(Convert.FromBase64String(authHeaderValue));
             var credentials = authHeaderValue.Split(':');
-            return credentials.Length < 2 ? null : new BasicAuthenticationIdentity(credentials[0], credentials[1]);
+            return credentials.Length < 2 ? null : new AuthenticationIdentity(credentials[0], credentials[1]);
         }
 
 

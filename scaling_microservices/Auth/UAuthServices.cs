@@ -19,7 +19,7 @@ namespace scaling_microservices.Auth
         /// <returns></returns>
         public int Authenticate(string userName, string password)
         {
-            var user = new BasicAuthenticationIdentity("user", "pwd") { UserId = 1 };//repository.Get(u => u.UserName == userName && u.Password == password);
+            var user = new AuthenticationIdentity("user", "pwd") { UserId = 1 };//repository.Get(u => u.UserName == userName && u.Password == password);
             if (user != null && user.UserId > 0)
             {
                 return user.UserId;
@@ -28,4 +28,5 @@ namespace scaling_microservices.Auth
         }
     }
 }
+//idk, what is Authenticate
 //TODO : move this to auth service
