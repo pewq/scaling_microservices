@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using scaling_microservices.Rabbit;
 using scaling_microservices.Registry;
+using scaling_microservices.Proxy;
 
 namespace discovery_service
 {
@@ -52,6 +55,7 @@ namespace discovery_service
             this.Handlers.Add("get_services", (RequestHandleDelegate)getServicesHandler);
             this.Handlers.Add("get_all_data", (RequestHandleDelegate)getAllHandler);
             this.Handlers.Add("is_alive", (RequestHandleDelegate)isAliveHandler);
+            this.Handlers.Add("broadcast", (RequestHandleDelegate)broadcastHandler);
             registerToClient();
         }
 
@@ -103,7 +107,7 @@ namespace discovery_service
                 OnException(e, req);
             }
         }
-
+         
         private void getServicesHandler(QueueRequest req)
         {
             try
@@ -139,6 +143,39 @@ namespace discovery_service
                 OnResponse(req.properties, new { is_alive = true });
             }
             catch (Exception e)
+            {
+                OnException(e, req);
+            }
+        }
+
+        private void broadcastHandler(QueueRequest req)
+        {
+            //TODO : idk, how this should respond. or should it at all?
+            List<string> targetTypes = new List<string>();
+            List<string> targetServices = new List<string>();
+            if(req.arguments.ContainsKey("target_types"))
+            {
+                targetTypes = JsonConvert.DeserializeObject<List<string>>(req["target_types"]);
+            }
+            else
+            {
+                targetTypes = registry.GetTypes();
+                if(req.arguments.ContainsKey("exclude_types"))
+                {
+                    List<string> excludeTypes = JsonConvert.DeserializeObject<List<string>>(req["exclude_types"]);
+                    targetTypes = targetTypes.Except(excludeTypes).ToList();
+                }
+            }
+            try
+            {
+                targetServices = registry.GetServices(targetTypes, req["owner"]);
+                targetServices.ForEach(t =>
+                {
+                    var proxy = new BasicProxy(t, "");
+                    proxy.Send(req);
+                });
+            }
+            catch(Exception e)
             {
                 OnException(e, req);
             }
