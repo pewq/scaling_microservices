@@ -1,5 +1,6 @@
 ﻿using System;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Framing;
 
 namespace scaling_microservices.Rabbit
 {
@@ -71,6 +72,11 @@ namespace scaling_microservices.Rabbit
             {
                 return properties.CorrelationId;
             }
+        }
+
+        public Message()
+        {
+            this.properties = new BasicProperties();
         }
     }
 }
