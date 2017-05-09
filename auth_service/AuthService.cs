@@ -54,9 +54,12 @@ namespace auth_service
                 {
                     return null;
                 }
-                manager.CheckPassword(user, password);
+                if (manager.CheckPassword(user, password))
+                {
+                    return storage.GenerateToken(user.Id);
+                }
             }
-            return storage.GenerateToken(login.GetHashCode());
+            return null;
         }
 
         private int handleCredentialAuth(string login, string password)
@@ -114,7 +117,20 @@ namespace auth_service
 
         private void RegistrationHandler(QueueRequest req)
         {
-            //OnResponse
+            try
+            {
+                using (var ctx = new AppUserDbContext())
+                {
+                    AppUserManager manager = new AppUserManager(new AppUserStore(ctx));
+                    var newUser = new AppUser();
+                    newUser.OwnerId = req["owner_id"];
+                    newUser.UserName = req["user_name"];
+                    var result = manager.Create(newUser, req["password"]);
+                    OnResponse(req.properties, result.Succeeded);
+                }
+            }
+            catch
+            { }
         }
 
 

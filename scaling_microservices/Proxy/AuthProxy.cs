@@ -49,5 +49,16 @@ namespace scaling_microservices.Proxy
             var msg = endpoint.Recieve();
             return JsonConvert.DeserializeAnonymousType(msg.StringBody, template).status;
         }
+
+        public bool Register(string username, string password, string owner)
+        {
+            var request = new QueueRequest() { method = "register" };
+            request["user_name"] = username;
+            request["password"] = password;
+            request["owner_id"] = owner;
+            Send(request);
+            var msg = endpoint.Recieve();
+            return JsonConvert.DeserializeObject<bool>(msg.StringBody);
+        }
     }
 }
