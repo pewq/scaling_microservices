@@ -1,11 +1,11 @@
-﻿namespace scaling_microservices.Proxy.Model
+﻿using scaling_microservices.Auth.Identity;
+
+namespace scaling_microservices.Proxy.Model
 {
-    public class UserModel
+    public class UserModel : AuthenticationIdentity
     {
-        public int UserId { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
+        public UserModel() : base("", "") { }
+
+        public UserModel(string userName, string password):base(userName, password) { }
     }
 }

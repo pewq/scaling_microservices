@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace scaling_microservices.Proxy.Model
 {
     public class RoleModel
     {
+        [Key]
         public int RoleId { get; set; }
         public string Name { get; set; }
         public string Owner { get; set; }
