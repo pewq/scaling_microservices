@@ -71,10 +71,6 @@ namespace client_service
             {
                 users = users.Where(x => x.Name == req["user_name"]).ToList();
             }
-            if(req["user_email"] != "")
-            {
-                users = users.Where(x => x.Email == req["user_email"]).ToList();
-            }
             OnResponse(req.properties, users.First());
         }
 
@@ -123,11 +119,7 @@ namespace client_service
             }
             if(req["user_name"] != "")
             {
-                user.Name = req["user_name"];
-            }
-            if(req["user_email"] != "")
-            {
-                user.Email = req["user_email"];
+                user.UserName = req["user_name"];
             }
             //idk, whether user was set
 
