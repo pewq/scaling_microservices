@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace scaling_microservices.Proxy
 {
-    public class DiscoveryProxy : IProxy
+    public class DiscoveryProxy : BasicProxy
     {
         //const int responseTimeout = 100;
         public DiscoveryProxy(string route) : base(route,"")

@@ -2,7 +2,7 @@
 
 namespace scaling_microservices.Proxy
 {
-    public abstract class IProxy
+    public class BasicProxy
     {
         public string route { get; private set; }
 
@@ -10,7 +10,7 @@ namespace scaling_microservices.Proxy
 
         protected SubscriptionEndpoint endpoint;
 
-        protected IProxy(string _route, string _exchange)
+        public BasicProxy(string _route, string _exchange)
         {
             endpoint = new SubscriptionEndpoint();
             route = _route;
@@ -20,6 +20,20 @@ namespace scaling_microservices.Proxy
         public virtual void Send(QueueRequest req)
         {
             endpoint.SendTo(req, route, exchange);
+        }
+
+        public virtual void Send(string messageString)
+        {
+            var message = new Message() { StringBody = messageString };
+            endpoint.SendTo(message, route, exchange);
+        }
+        public virtual void Send(Message message)
+        {
+            endpoint.SendTo(message, route, exchange);
+        }
+        public virtual void Send(object obj)
+        {
+
         }
     }
 }

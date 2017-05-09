@@ -95,6 +95,17 @@ namespace scaling_microservices.Registry
             return items.Select(x => x.Id).ToList();
         }
 
+        public List<string> GetServices(List<string> types, string owner)
+        {
+            return items.Where(x => types.Contains(x.ServiceType) && x.Owner == owner)
+                .Select(x => x.Address).ToList();
+        }
+
+        public List<string> GetTypes()
+        {
+            return items.Select(x => x.ServiceType).Distinct().ToList();
+        }
+
 
     }
 }

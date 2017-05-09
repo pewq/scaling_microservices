@@ -5,7 +5,7 @@ using scaling_microservices.Auth.Tokens;
 
 namespace scaling_microservices.Proxy
 {
-    public class AuthProxy : IProxy
+    public class AuthProxy : BasicProxy
     {
         public AuthProxy(string _route = "", string _exchange = "") : base(_route, _exchange)
         { }
@@ -20,12 +20,13 @@ namespace scaling_microservices.Proxy
             return JsonConvert.DeserializeAnonymousType(msg.StringBody, template).status;
         }
 
-        public TokenEntity BasicAuthenticate(string login, string password)
+        public TokenEntity BasicAuthenticate(string login, string password, string owner)
         {
             var request = new QueueRequest() { method = "authenticate" };
             request["type"] = "basic";
             request["login"] = login;
             request["password"] = password;
+            request["owner"] = owner;
             Send(request);
             var msg = endpoint.Recieve();
             try
@@ -34,6 +35,7 @@ namespace scaling_microservices.Proxy
             }
             catch(Exception)
             {
+                //Delerialization exception; ill-formed object was returned
                 return null;
             }
         }

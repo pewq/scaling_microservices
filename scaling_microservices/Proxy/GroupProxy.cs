@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace scaling_microservices.Proxy
 {
-    public class GroupProxy : IProxy
+    public class GroupProxy : BasicProxy
     {
         public GroupProxy(string route = "", string exchange = "") : base(route, exchange) { }
 
