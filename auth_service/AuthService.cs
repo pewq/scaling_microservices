@@ -1,19 +1,30 @@
 ﻿using System;
+using Microsoft.AspNet.Identity;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Core.Objects;
+using System.Linq;
+using Microsoft.AspNet.Identity.EntityFramework;
 using scaling_microservices.Rabbit;
 using scaling_microservices.Auth.Tokens;
+using scaling_microservices.Identity;
+using Newtonsoft.Json;
 
 namespace auth_service
 {
     public class AuthService : IService
     {
         TokenStore storage = new TokenStore();
-        public AuthService() : base()
-        {
-            ThisInit();
-        }
 
-        public AuthService(string queueName) : base(queueName)
+        string dbConnectionString = "auth_database";
+        //public AuthService() : base()
+        //{
+        //    ThisInit();
+        //}
+
+        public AuthService(string queueName, string dbNameOrConnectionString) : base(queueName)
         {
+            this.dbConnectionString = dbNameOrConnectionString;
             ThisInit();
         }
 
@@ -22,9 +33,10 @@ namespace auth_service
         private void ThisInit()
         {
             //Init db here;
+            this.Handlers.Add("register", (RequestHandleDelegate)RegistrationHandler);
             this.Handlers.Add("authenticate", (RequestHandleDelegate)AuthenticationHandler);
             this.Handlers.Add("authorize", (RequestHandleDelegate)AuthorizationHandler);
-            this.Handlers.Add("validate", (RequestHandleDelegate)ValidateTokenHandler);
+            this.Handlers.Add("broadcast_authenticate", (RequestHandleDelegate)BroadcastAuthenticationHandler);
         }
 
         private int handleBasicAuth(string token)
@@ -32,10 +44,18 @@ namespace auth_service
             return 1;
         }
 
-        private TokenEntity handleCredentialBasicAuth(string login, string password)
+        private TokenEntity handleCredentialBasicAuth(string login, string password, string owner)
         {
-            //Get user id by login and password
-            //or return null
+            using (var ctx = new AppUserDbContext())
+            { 
+                AppUserManager manager = new AppUserManager(new AppUserStore(ctx));
+                var user = manager.Find(login, owner);
+                if(user.UserName == null)
+                {
+                    return null;
+                }
+                manager.CheckPassword(user, password);
+            }
             return storage.GenerateToken(login.GetHashCode());
         }
 
@@ -44,6 +64,7 @@ namespace auth_service
             return 1;
         }
 
+        #region Handlers
         private void AuthenticationHandler(QueueRequest req)
         {
             try
@@ -54,17 +75,15 @@ namespace auth_service
                 {
                     case "token":
                         {
-                            //handle available token
+                            //validate token 
+                            //mb redirect to authrization?
+                            //^ creates double call
+                            //maybe skip authentication when token is provided
                             break;
                         }
                     case "basic":
                         {
-                            userToken = handleCredentialBasicAuth(req["login"], req["password"]);
-                            break;
-                        }
-                    case "credential":
-                        {
-                           // userToken = handleCredentialAuth(req["login"], req["password"]);
+                            userToken = handleCredentialBasicAuth(req["login"], req["password"], req["owner"]);
                             break;
                         }
                     default:
@@ -93,19 +112,27 @@ namespace auth_service
             }
         }
 
-        private void ValidateTokenHandler(QueueRequest req)
+        private void RegistrationHandler(QueueRequest req)
         {
-
+            //OnResponse
         }
 
-        private void UpdateTokenHandler(QueueRequest req)
+
+        //user_id
+        //token
+        //roles
+        //offset
+        private void BroadcastAuthenticationHandler(QueueRequest req)
         {
+            try
+            {
+                storage.Add(req["user_id"], req["token"], JsonConvert.DeserializeObject<string[]>(req["roles"]), int.Parse(req["offset"]));
+            }
+            catch
+            {
 
+            }
         }
-
-        private void UpdateToken(string token)
-        {
-
-        }
+        #endregion
     }
 }

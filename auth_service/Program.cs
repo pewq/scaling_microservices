@@ -8,7 +8,7 @@ namespace auth_service
     {
         static void Main(string[] args)
         {
-            var service = new AuthService("authservice");
+            var service = new AuthService("authservice", "");
             Thread.Sleep(-1);
         }
     }
