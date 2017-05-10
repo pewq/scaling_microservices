@@ -2,6 +2,8 @@
 using scaling_microservices.Auth.Tokens;
 using scaling_microservices.Proxy;
 using System.Linq;
+using RabbitMQ.Client;
+using scaling_microservices.Rabbit;
 
 namespace test_project
 {
@@ -9,9 +11,9 @@ namespace test_project
     {
         static void Main(string[] args)
         {
-            var proxy = new AuthProxy("authservice", "");
-            var status = proxy.Register("default", "default", "");
-            Console.WriteLine(status);
+            var endpoint = new EventingEndpoint();
+            var queueHandle = endpoint.channel.QueueDeclarePassive(queue: auth_service.AuthService.AuthServiceQueue);
+            Console.WriteLine(queueHandle.QueueName);
             Console.ReadLine();
         }
     }
