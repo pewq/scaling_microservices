@@ -15,7 +15,10 @@ namespace scaling_microservices.Auth.Tokens
             storage = new RedisTokenStorage();
         }
 
-
+        public bool Add(TokenEntity token)
+        {
+            return Add(token.UserId.ToString(), token.AuthToken, token.Roles, (int)token.ExpiresOn.Subtract(DateTime.Now).TotalSeconds);
+        }
         public bool Add(string userId, string token, string[] roles = null, int offset = ExpiryTimeOffset)
         {
             return storage.Set(userId, token, roles, offset).Result;
