@@ -56,8 +56,8 @@ namespace discovery_service
         
         [HttpPost]
         [ActionName("ping")]
-        [ServiceAuthentication("authservice")]
-        [ServiceAuthorization("authservice")]
+        [ServiceAuthentication("auth_service")]
+        [ServiceAuthorization("auth_service")]
         public IHttpActionResult Ping([FromUri] string name, [FromUri] string token)
         {
             try
