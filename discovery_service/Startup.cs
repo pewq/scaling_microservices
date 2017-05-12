@@ -17,6 +17,8 @@ namespace discovery_service
                 defaults: new { id = RouteParameter.Optional }
             );
 
+            //dynamic property = appBuilder.Properties["host.Addresses"];
+            //string port = property[0]["port"];
             appBuilder.UseWebApi(config);
         }
     }

@@ -8,9 +8,16 @@ namespace discovery_service
         static void Main(string[] args)
         {
             DiscoveryService.Instance.GetType();
-            var baseAddr = "http://localhost:5133";
-            using (WebApp.Start<Startup>(baseAddr))
+            var options = new StartOptions()
             {
+                Port = 5133,
+            };
+            options.Settings.Add("service_queue", DiscoveryService.QueueName);//wtf?
+            //change this to non-generic version
+            //add registering to service
+            using (WebApp.Start<Startup>(options))
+            {
+
                 Console.WriteLine("press enter");
                 Console.ReadLine();
             }
