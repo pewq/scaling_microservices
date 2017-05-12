@@ -8,7 +8,11 @@ namespace auth_service
     {
         static void Main(string[] args)
         {
-            var service = new AuthService("authservice", "");
+            var service = new AuthService("");
+            service.LogFunction += (str) =>
+            {
+                Console.Write(str);
+            };
             Thread.Sleep(-1);
         }
     }
