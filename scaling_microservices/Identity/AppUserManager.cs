@@ -21,9 +21,9 @@ namespace scaling_microservices.Identity
             return manager;
         }
 
-        public AppUser Find(string login, string owner)
+        public AppUser Find(string userName, string owner)
         {
-            return this.Store.FindByNameAsync(login).Result;
+            return this.Store.FindByNameAsync(userName).Result;
         }
     }
 }
