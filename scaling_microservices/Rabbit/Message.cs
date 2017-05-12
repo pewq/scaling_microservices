@@ -10,19 +10,18 @@ namespace scaling_microservices.Rabbit
     /// </summary>
     public class Message
     {
-        public IBasicProperties properties { get; set; }
+        public IBasicProperties Properties { get; set; }
         public byte[] body { get; set; }
 
         public string StringBody
         {
             get
             {
-                if(properties.ContentEncoding == QueueRequest.classname)
+                if(Properties.ContentEncoding == QueueRequest.classname)
                 {
-                    //TODO: either deserialize or throw
-                    return "QueueRequest";
+                    return Newtonsoft.Json.JsonConvert.SerializeObject(new QueueRequest(body));
                 }
-                switch (properties.ContentEncoding)
+                switch (Properties.ContentEncoding)
                 {
                     case "UTF8":
                         {
@@ -46,9 +45,9 @@ namespace scaling_microservices.Rabbit
             }
             set
             {
-                if (properties != null)
+                if (Properties != null)
                 {
-                    properties.ContentEncoding = "UTF8";
+                    Properties.ContentEncoding = "UTF8";
                     body = System.Text.Encoding.UTF8.GetBytes(value);
                 }
                 else
@@ -62,7 +61,11 @@ namespace scaling_microservices.Rabbit
         {
             get
             {
-                return properties.ContentEncoding;
+                return Properties.ContentEncoding;
+            }
+            set
+            {
+                Properties.ContentEncoding = value;
             }
         }
 
@@ -70,13 +73,19 @@ namespace scaling_microservices.Rabbit
         {
             get
             {
-                return properties.CorrelationId;
+                return Properties.CorrelationId;
             }
         }
 
         public Message()
         {
-            this.properties = new BasicProperties();
+            this.Properties = new BasicProperties();
+        }
+
+        public void SetQueueRequest(QueueRequest req)
+        {
+            this.Encoding = QueueRequest.classname;
+            this.body = req.ToByteArray();
         }
     }
 }
