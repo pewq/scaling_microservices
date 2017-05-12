@@ -14,13 +14,14 @@ namespace auth_service
 {
     public class AuthService : IService
     {
+        public const string AuthServiceQueue = "auth_service";
+        const string BroadcastExchange = "auth_fanout_exchange";
+
         TokenStore storage = new TokenStore();
 
+        EventingEndpoint broadcastEndpoint;
+
         string dbConnectionString = "auth_database";
-        //public AuthService() : base()
-        //{
-        //    ThisInit();
-        //}
 
         public AuthService(string queueName, string dbNameOrConnectionString) : base(queueName)
         {
@@ -28,22 +29,42 @@ namespace auth_service
             ThisInit();
         }
 
-
+        public AuthService(string dbNameOrConnectionString) : base(AuthServiceQueue, true)
+        {
+            this.dbConnectionString = dbNameOrConnectionString;
+            ThisInit();
+        }
 
         private void ThisInit()
         {
-            //Init db here;
+            //init exchange for broadcast
+            broadcastEndpoint = new EventingEndpoint();
+            //"fanout" is const string for type of exchange.
+            broadcastEndpoint.ExchangeExistsOrDeclare(BroadcastExchange, "fanout");
+            //bind endpoint.Queue to echange
+            broadcastEndpoint.Bind(BroadcastExchange, "");
+            broadcastEndpoint.OnRecieved += (obj, message) => {
+                if(message.Properties.ReplyTo == endpoint.InQueue || message.Properties.ReplyTo == broadcastEndpoint.InQueue)
+                {
+                    return;
+                }
+                if(message.Encoding == QueueRequest.classname)
+                {
+                    QueueRequest req = new QueueRequest(message.body, message.Properties);
+                    this.BroadcastAuthenticationHandler(req);
+                }
+            };
+
             this.Handlers.Add("register", (RequestHandleDelegate)RegistrationHandler);
             this.Handlers.Add("authenticate", (RequestHandleDelegate)AuthenticationHandler);
             this.Handlers.Add("authorize", (RequestHandleDelegate)AuthorizationHandler);
-            this.Handlers.Add("broadcast_authenticate", (RequestHandleDelegate)BroadcastAuthenticationHandler);
         }
 
         private int handleBasicAuth(string token)
         {
             return 1;
         }
-
+        #region Auth Handlers
         private TokenEntity handleCredentialBasicAuth(string login, string password, string owner)
         {
             using (var ctx = new AppUserDbContext())
@@ -56,7 +77,8 @@ namespace auth_service
                 }
                 if (manager.CheckPassword(user, password))
                 {
-                    return storage.GenerateToken(user.Id);
+                    var roles = manager.GetRoles(user.Id);
+                    return storage.GenerateToken(user.Id, roles.ToArray());
                 }
             }
             return null;
@@ -66,7 +88,7 @@ namespace auth_service
         {
             return 1;
         }
-
+        #endregion
         #region Handlers
         private void AuthenticationHandler(QueueRequest req)
         {
@@ -94,7 +116,7 @@ namespace auth_service
                             throw new Exception("Invalid authentication type");
                         }
                 }
-                OnResponse(req.properties, userToken);
+                OnResponseWBCast(req.properties, userToken);
             }
             catch(Exception e)
             {
@@ -126,7 +148,31 @@ namespace auth_service
                     newUser.OwnerId = req["owner_id"];
                     newUser.UserName = req["user_name"];
                     var result = manager.Create(newUser, req["password"]);
+                    var proxy = new scaling_microservices.Proxy.ClientProxy("ClientCommandQueue", "");
+                    
+                    if (result.Succeeded)
+                    {
+                        var model = new scaling_microservices.Model.UserModel()
+                        {
+                            Email = "",
+                            OwnerId = newUser.OwnerId,
+                            UserName = newUser.UserName,
+                            UserId = manager.Find(newUser.UserName, newUser.OwnerId).Id
+                        };
+                        int userId = proxy.AddUser(model);
+                        if(userId == model.UserId)
+                        {
+                            OnResponse(req.properties, result.Succeeded);
+                        }
+                        else
+                        {
+                            ctx.Users.Remove(newUser);
+                            OnException(new OperationCanceledException("client service was unable to register user"), req);
+
+                        }
+                    }
                     OnResponse(req.properties, result.Succeeded);
+                    
                 }
             }
             catch
@@ -142,13 +188,21 @@ namespace auth_service
         {
             try
             {
-                storage.Add(req["user_id"], req["token"], JsonConvert.DeserializeObject<string[]>(req["roles"]), int.Parse(req["offset"]));
+                var token = JsonConvert.DeserializeObject<TokenEntity>(req["user_token"]);
+                storage.Add(token);
             }
             catch
             {
-
             }
         }
         #endregion
+
+        protected void OnResponseWBCast(RabbitMQ.Client.IBasicProperties props, object obj)
+        {
+            QueueRequest req = new QueueRequest();
+            req["user_token"] = JsonConvert.SerializeObject(obj as TokenEntity);
+            endpoint.SendTo(req, "", BroadcastExchange);
+            base.OnResponse(props, obj);
+        }
     }
 }
