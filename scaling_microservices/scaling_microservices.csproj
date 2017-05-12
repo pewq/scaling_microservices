@@ -448,6 +448,8 @@
     <Compile Include="Auth\Tokens\TokenEntity.cs" />
     <Compile Include="Auth\Tokens\TokenStore.cs" />
     <Compile Include="Auth\UAuthServices.cs" />
+    <Compile Include="Entity\GroupContext.cs" />
+    <Compile Include="Entity\UserContext.cs" />
     <Compile Include="EventDictionary.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Identity\AppRole.cs" />
@@ -463,11 +465,11 @@
     <Compile Include="Proxy\DiscoveryProxy.cs" />
     <Compile Include="Proxy\GroupProxy.cs" />
     <Compile Include="Proxy\BasicProxy.cs" />
-    <Compile Include="Proxy\Model\GroupModel.cs" />
-    <Compile Include="Proxy\Model\GroupModel_simplified.cs" />
-    <Compile Include="Proxy\Model\RoleModel.cs" />
-    <Compile Include="Proxy\Model\RoleModel_simplified.cs" />
-    <Compile Include="Proxy\Model\UserModel.cs" />
+    <Compile Include="Model\GroupModel.cs" />
+    <Compile Include="Model\GroupModel_simplified.cs" />
+    <Compile Include="Model\RoleModel.cs" />
+    <Compile Include="Model\RoleModel_simplified.cs" />
+    <Compile Include="Model\UserModel.cs" />
     <Compile Include="Rabbit\EventingEndpoint.cs" />
     <Compile Include="Rabbit\IEndpoint.cs" />
     <Compile Include="Rabbit\QueueResponse.cs" />
@@ -479,10 +481,6 @@
     <Compile Include="Rabbit\Registry\ServiceRegistry.cs" />
     <Compile Include="Auth\ServiceAuthorizationAttribute.cs" />
     <Compile Include="Auth\ServiceAuthenticationAtrribute.cs" />
-    <Compile Include="StorageStub\GroupStorage.cs" />
-    <Compile Include="StorageStub\IStorage.cs" />
-    <Compile Include="StorageStub\RoleStorage.cs" />
-    <Compile Include="StorageStub\UserStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -490,9 +488,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Entity\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

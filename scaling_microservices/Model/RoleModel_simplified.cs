@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace scaling_microservices.Proxy.Model
+namespace scaling_microservices.Model
 {
     public class RoleModel_simplified
     {
