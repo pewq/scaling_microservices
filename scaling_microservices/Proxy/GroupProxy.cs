@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using scaling_microservices.Proxy.Model;
+using scaling_microservices.Model;
 using scaling_microservices.Rabbit;
 using Newtonsoft.Json;
 
@@ -32,10 +32,11 @@ namespace scaling_microservices.Proxy
             return JsonConvert.DeserializeObject<GroupModel>(endpoint.Recieve().StringBody);
         }
 
-        public GroupModel_simplified AddGroup(string groupName, int creatorId)
+        public GroupModel_simplified AddGroup(string groupName, string ownerId, int creatorId)
         {
             var req = new QueueRequest() { method = "create_group" };
             req["group_name"] = groupName;
+            req["owner_id"] = ownerId;
             req["creator_id"] = creatorId.ToString();
             Send(req);
             return JsonConvert.DeserializeObject<GroupModel_simplified>(endpoint.Recieve().StringBody);

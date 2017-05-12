@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using scaling_microservices.Proxy.Model;
+using scaling_microservices.Model;
 using scaling_microservices.Rabbit;
 using Newtonsoft.Json;
 
@@ -21,14 +21,14 @@ namespace scaling_microservices.Proxy
             var result = JsonConvert.DeserializeObject<List<UserModel>>(response.StringBody);
             return result;
         }
-        public UserModel GetUser(int userId = 0, string userName = "", string userEmail = "")
+        public List<UserModel> GetUser(int userId = 0, string userName = "", string userEmail = "")
         {
             var req = new QueueRequest() { method = "get_user" };
             req["user_id"] = userId.ToString();
             req["user_name"] = userName;
             req["user_email"] = userEmail;
             Send(req);
-            return JsonConvert.DeserializeObject<UserModel>(endpoint.Recieve().StringBody);
+            return JsonConvert.DeserializeObject<List<UserModel>>(endpoint.Recieve().StringBody);
         }
 
         public int AddUser(UserModel user)
@@ -59,6 +59,11 @@ namespace scaling_microservices.Proxy
             req["user_id"] = userId.ToString();
             Send(req);
             return JsonConvert.DeserializeObject<bool>(endpoint.Recieve().StringBody);
+        }
+
+        public List<UserModel> SearchUsers(List<int> userIds = null, List<string> userName = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }
