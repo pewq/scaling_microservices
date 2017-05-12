@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Newtonsoft.Json;
-using scaling_microservices.Proxy.Model;
+using scaling_microservices.Model;
 using scaling_microservices.StorageStub;
 using scaling_microservices.Rabbit;
+using scaling_microservices.Entity;
 
 namespace client_service
 {
@@ -56,22 +57,34 @@ namespace client_service
 
         private void GetUsersHandler(QueueRequest req)
         {
-            var users = UserStorage.storage.ToList();
-            OnResponse(req.properties, users);
+            var context = new UserContext();
+            OnResponse(req.properties, context.Users.ToList());
         }
 
         private void SearchUserHandler(QueueRequest req)
         {
-            var users = UserStorage.storage.ToList();
-            if (req["user_id"] != "0")
+
+            string parameter = req.Contains("user_id");
+            if(parameter != null && parameter != "0")
             {
-                users = users.Where(x => x.UserId.ToString() == req["user_id"]).ToList();
+                using (var ctx = new UserContext())
+                {
+                    var user = ctx.Users.SingleOrDefault(x => x.UserId == int.Parse(parameter));
+                    OnResponse(req.properties, user);
+                    return;
+                }
             }
-            if(req["user_name"] != "")
+            parameter = req.Contains("user_name");
+            if(!String.IsNullOrEmpty(parameter))
             {
-                users = users.Where(x => x.Name == req["user_name"]).ToList();
+                using (var ctx = new UserContext())
+                {
+                    var users = ctx.Users.Where(x => x.UserName == parameter);
+                    OnResponse(req.properties, users);
+                    return;
+                }
             }
-            OnResponse(req.properties, users.First());
+            OnResponse(req.properties, null);
         }
 
         private void AddUserHandler(QueueRequest req)
@@ -88,19 +101,19 @@ namespace client_service
             }
             if(user != null)
             {
-                var existingUser = UserStorage.storage.GetById(user.UserId);
-                if(existingUser != null)
+                using (var ctx = new UserContext())
                 {
-                    resultId = -1;
-                }
-                else
-                {
-                    if(user.UserId != 0)
+                    var existingUser = ctx.Users.FirstOrDefault(x => x.UserId == user.UserId);
+                    if (existingUser != null)
                     {
-                        //Generate UserId
+                        resultId = -1;
                     }
-                    resultId = user.UserId;
-                }
+                    else
+                    {
+                        ctx.Users.Add(user);
+                        resultId = user.UserId;
+                    }
+                }                
             }
             else
             {
@@ -111,31 +124,41 @@ namespace client_service
 
         private void EditUserHandler(QueueRequest req)
         {
-            var user = UserStorage.storage.GetById(int.Parse(req["user_id"]));
-            if(user != null)
+            using (var ctx = new UserContext())
             {
-                OnResponse(req.properties, false);
-                return;
+                var user = ctx.Users.FirstOrDefault(x => x.UserId == int.Parse(req["user_id"]));
+                if (user == null)
+                {
+                    OnResponse(req.properties, false);
+                    return;
+                }
+                if (req.arguments.ContainsKey("user_name") && req["user_name"] != "")
+                {
+                    user.UserName = req["user_name"];
+                }
+                if (req.arguments.ContainsKey("user_email") && req["user_email"] != "")
+                {
+                    user.UserName = req["user_email"];
+                }
+                ctx.SaveChanges();
+                OnResponse(req.properties, true);
             }
-            if(req["user_name"] != "")
-            {
-                user.UserName = req["user_name"];
-            }
-            //idk, whether user was set
-
-            OnResponse(req.properties, true);
         }
 
         private void DeleteUserHandler(QueueRequest req)
         {
-            var user = UserStorage.storage.GetById(int.Parse(req["user_id"]));
-            if(user == null)
+            using (var ctx = new UserContext())
             {
-                OnResponse(req.properties, false);
-                return;
+                var user = ctx.Users.First(x => x.UserId == int.Parse(req["user_id"]));
+                if (user != null) {
+                    ctx.Users.Remove(user);
+                    OnResponse(req.properties, true);
+                }
+                else
+                {
+                    OnResponse(req.properties, false);
+                }
             }
-            UserStorage.storage.Remove(user);
-            OnResponse(req.properties, true);
         }
         #endregion
 
