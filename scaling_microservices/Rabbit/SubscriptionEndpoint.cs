@@ -26,6 +26,10 @@ namespace scaling_microservices.Rabbit
         {
             subscription = new Subscription(channel, InQueue);
         }
+        public SubscriptionEndpoint(string host, int port, string inQName, bool tryPassiveDeclare) : base(host, port, inQName, tryPassiveDeclare)
+        {
+            subscription = new Subscription(channel, InQueue);
+        }
 
         public SubscriptionEndpoint(SubscriptionEndpoint other, string inQName = "") : base(other, inQName)
         {
@@ -34,7 +38,7 @@ namespace scaling_microservices.Rabbit
         public Message Recieve()
         {
             var msg = subscription.Next();
-            return new Message() { properties = msg.BasicProperties, body = msg.Body };
+            return new Message() { Properties = msg.BasicProperties, body = msg.Body };
         }
 
         public QueueResponse Recieve(int msTimeout)

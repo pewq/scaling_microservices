@@ -67,6 +67,15 @@ namespace scaling_microservices.Rabbit
             }
         }
 
+        public string Contains(string key)
+        {
+            if(this.arguments.ContainsKey(key))
+            {
+                return this[key];
+            }
+            return null;
+        }
+
         public byte[] ToByteArray()
         {
             var formatter = new BinaryFormatter();

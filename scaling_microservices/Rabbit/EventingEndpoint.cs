@@ -16,12 +16,17 @@ namespace scaling_microservices.Rabbit
             ThisInit();
         }
 
-        public EventingEndpoint(string inQName = "") : base(inQName)
+        public EventingEndpoint(string inQName = "", bool tryPassiveDeclare = false) : base(inQName, tryPassiveDeclare)
         {
             ThisInit();
         }
 
-        public EventingEndpoint(string host, int port, string inQname) : base(host, port, inQname)
+        public EventingEndpoint(string host, int port, string inQName) : base(host, port, inQName)
+        {
+            ThisInit();
+        }
+
+        public EventingEndpoint(string host, int port, string inQName, bool tryPassiveDeclare) : base(host, port, inQName, tryPassiveDeclare)
         {
             ThisInit();
         }
@@ -33,7 +38,7 @@ namespace scaling_microservices.Rabbit
                 var ch = channel;
                 consumer = new EventingBasicConsumer(ch);
                 consumer.Received += Consumer_Received;
-                channel.BasicConsume(base.InQueue, false, "", false, true, null, consumer);
+                channel.BasicConsume(base.InQueue, false, "", false, false, null, consumer);
             }
             catch(Exception e)
             {
@@ -46,7 +51,7 @@ namespace scaling_microservices.Rabbit
         {
             if(OnRecieved != null)
             {
-                var message = new Message() { properties = e.BasicProperties, body = e.Body };
+                var message = new Message() { Properties = e.BasicProperties, body = e.Body };
                 if (correlatedCallbacks.ContainsKey(e.BasicProperties.CorrelationId))
                 {
                     (correlatedCallbacks[e.BasicProperties.CorrelationId])(this, message);

@@ -12,6 +12,9 @@ namespace scaling_microservices.Rabbit
         protected string connectionString;//database connection string
         protected EventingEndpoint endpoint { get; private set; }
 
+        public delegate void LogDelegate(string str);
+        public LogDelegate LogFunction = null;
+
         protected EventDictionary<RequestHandleDelegate> Handlers { get; private set; } 
             = new EventDictionary<RequestHandleDelegate>();
         protected virtual void ProcessRequest(QueueRequest request)
@@ -36,17 +39,24 @@ namespace scaling_microservices.Rabbit
             ThisInit();
         }
 
-        public IService(string queueName)
+        public IService(string queueName, bool tryPassiveDeclare = false)
         {
-            endpoint = new EventingEndpoint(/*_connection , _model,*/ queueName);
+            endpoint = new EventingEndpoint(/*_connection , _model,*/ queueName, tryPassiveDeclare);
             ThisInit();
         }
-        public IService(string queueName, string port)
+        public IService(string queueName, string port, bool tryPassiveDeclare = false)
         {
-            endpoint = new EventingEndpoint("localhost", int.Parse(port), queueName);
+            endpoint = new EventingEndpoint("localhost", int.Parse(port), queueName, tryPassiveDeclare);
             ThisInit();
         }
 
+        //public string QueueName
+        //{
+        //    get
+        //    {
+        //        return endpoint.InQueue;
+        //    }
+        //}
 
 
         /// <summary>
@@ -73,14 +83,15 @@ namespace scaling_microservices.Rabbit
         //handle for endpoint recieved
         private void Endpoint_OnRecieved(object sender, Message e)
         {
+            LogFunction?.Invoke(e.StringBody);
             if (e.Encoding == QueueRequest.classname)
             {
-                QueueRequest request = new QueueRequest(e.body, e.properties);
+                QueueRequest request = new QueueRequest(e.body, e.Properties);
                 OnRequest(request);
             }
             else if(e.Encoding == QueueResponse.classname)
             {
-                var response = new QueueResponse(e.body, e.properties);
+                var response = new QueueResponse(e.body, e.Properties);
                 //TODO: determine what to do with response recieved
                 //actually, this should never happpen, because, response should be directly
                 //routed to the controller
@@ -115,7 +126,7 @@ namespace scaling_microservices.Rabbit
         {
 
             Message msg = endpoint.Message();
-            msg.properties.ContentEncoding = "UTF8";
+            msg.Properties.ContentEncoding = "UTF8";
             msg.StringBody = JsonConvert.SerializeObject(responseBody);
             
             endpoint.SendTo(msg, destinationProps.ReplyTo);
