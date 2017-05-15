@@ -2,7 +2,6 @@
 using System.Linq;
 using Newtonsoft.Json;
 using scaling_microservices.Model;
-using scaling_microservices.StorageStub;
 using scaling_microservices.Rabbit;
 using scaling_microservices.Entity;
 
