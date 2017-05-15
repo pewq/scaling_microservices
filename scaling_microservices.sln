@@ -17,6 +17,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "group_service", "group_serv
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug wo Controller|Any CPU = Debug wo Controller|Any CPU
+		Debug wo Controller|x64 = Debug wo Controller|x64
+		Debug wo Controller|x86 = Debug wo Controller|x86
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
@@ -25,6 +28,12 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Debug wo Controller|Any CPU.ActiveCfg = Debug wo Controller|Any CPU
+		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Debug wo Controller|Any CPU.Build.0 = Debug wo Controller|Any CPU
+		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Debug wo Controller|x64.ActiveCfg = Debug wo Controller|Any CPU
+		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Debug wo Controller|x64.Build.0 = Debug wo Controller|Any CPU
+		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Debug wo Controller|x86.ActiveCfg = Debug wo Controller|Any CPU
+		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Debug wo Controller|x86.Build.0 = Debug wo Controller|Any CPU
 		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -37,6 +46,12 @@ Global
 		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Release|x64.Build.0 = Release|Any CPU
 		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Release|x86.ActiveCfg = Release|Any CPU
 		{B5D6FDE9-7B80-48E3-A687-F47667D0D053}.Release|x86.Build.0 = Release|Any CPU
+		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Debug wo Controller|Any CPU.ActiveCfg = Debug wo Controller|Any CPU
+		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Debug wo Controller|Any CPU.Build.0 = Debug wo Controller|Any CPU
+		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Debug wo Controller|x64.ActiveCfg = Debug wo Controller|Any CPU
+		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Debug wo Controller|x64.Build.0 = Debug wo Controller|Any CPU
+		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Debug wo Controller|x86.ActiveCfg = Debug wo Controller|Any CPU
+		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Debug wo Controller|x86.Build.0 = Debug wo Controller|Any CPU
 		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -49,6 +64,12 @@ Global
 		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Release|x64.Build.0 = Release|Any CPU
 		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Release|x86.ActiveCfg = Release|Any CPU
 		{0AA49553-D327-446C-AB62-CDA5C5E2777A}.Release|x86.Build.0 = Release|Any CPU
+		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Debug wo Controller|Any CPU.ActiveCfg = Debug wo Controller|Any CPU
+		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Debug wo Controller|Any CPU.Build.0 = Debug wo Controller|Any CPU
+		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Debug wo Controller|x64.ActiveCfg = Debug wo Controller|Any CPU
+		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Debug wo Controller|x64.Build.0 = Debug wo Controller|Any CPU
+		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Debug wo Controller|x86.ActiveCfg = Debug wo Controller|Any CPU
+		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Debug wo Controller|x86.Build.0 = Debug wo Controller|Any CPU
 		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -61,6 +82,12 @@ Global
 		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Release|x64.Build.0 = Release|Any CPU
 		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Release|x86.ActiveCfg = Release|Any CPU
 		{A06EA1C1-F792-4575-83BA-85E04FDD3F0D}.Release|x86.Build.0 = Release|Any CPU
+		{A927403F-0374-41EA-A188-C2EADCACB45D}.Debug wo Controller|Any CPU.ActiveCfg = Debug wo Controller|Any CPU
+		{A927403F-0374-41EA-A188-C2EADCACB45D}.Debug wo Controller|Any CPU.Build.0 = Debug wo Controller|Any CPU
+		{A927403F-0374-41EA-A188-C2EADCACB45D}.Debug wo Controller|x64.ActiveCfg = Debug wo Controller|Any CPU
+		{A927403F-0374-41EA-A188-C2EADCACB45D}.Debug wo Controller|x64.Build.0 = Debug wo Controller|Any CPU
+		{A927403F-0374-41EA-A188-C2EADCACB45D}.Debug wo Controller|x86.ActiveCfg = Debug wo Controller|Any CPU
+		{A927403F-0374-41EA-A188-C2EADCACB45D}.Debug wo Controller|x86.Build.0 = Debug wo Controller|Any CPU
 		{A927403F-0374-41EA-A188-C2EADCACB45D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A927403F-0374-41EA-A188-C2EADCACB45D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A927403F-0374-41EA-A188-C2EADCACB45D}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -73,6 +100,12 @@ Global
 		{A927403F-0374-41EA-A188-C2EADCACB45D}.Release|x64.Build.0 = Release|Any CPU
 		{A927403F-0374-41EA-A188-C2EADCACB45D}.Release|x86.ActiveCfg = Release|Any CPU
 		{A927403F-0374-41EA-A188-C2EADCACB45D}.Release|x86.Build.0 = Release|Any CPU
+		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Debug wo Controller|Any CPU.ActiveCfg = Debug wo Controller|Any CPU
+		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Debug wo Controller|Any CPU.Build.0 = Debug wo Controller|Any CPU
+		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Debug wo Controller|x64.ActiveCfg = Debug wo Controller|Any CPU
+		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Debug wo Controller|x64.Build.0 = Debug wo Controller|Any CPU
+		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Debug wo Controller|x86.ActiveCfg = Debug wo Controller|Any CPU
+		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Debug wo Controller|x86.Build.0 = Debug wo Controller|Any CPU
 		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -85,6 +118,12 @@ Global
 		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Release|x64.Build.0 = Release|Any CPU
 		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Release|x86.ActiveCfg = Release|Any CPU
 		{FCE2A929-B125-44FD-AE4E-EDD708BE7174}.Release|x86.Build.0 = Release|Any CPU
+		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug wo Controller|Any CPU.ActiveCfg = Debug wo Controller|Any CPU
+		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug wo Controller|Any CPU.Build.0 = Debug wo Controller|Any CPU
+		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug wo Controller|x64.ActiveCfg = Debug wo Controller|Any CPU
+		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug wo Controller|x64.Build.0 = Debug wo Controller|Any CPU
+		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug wo Controller|x86.ActiveCfg = Debug wo Controller|Any CPU
+		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug wo Controller|x86.Build.0 = Debug wo Controller|Any CPU
 		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Debug|x64.ActiveCfg = Debug|Any CPU
