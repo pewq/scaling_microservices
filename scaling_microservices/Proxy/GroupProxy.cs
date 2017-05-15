@@ -83,27 +83,28 @@ namespace scaling_microservices.Proxy
             return JsonConvert.DeserializeObject<bool>(endpoint.Recieve().StringBody);
         }
 
-        public RoleModel_simplified CreateRole(int CreatorId, string name)
+        public RoleModel_simplified CreateRole(int creatorId, string name, string owner)
         {
             var req = new QueueRequest() { method = "create_role" };
-            req["creator_id"] = CreatorId.ToString();
+            req["creator_id"] = creatorId.ToString();
             req["name"] = name;
+            req["owner"] = owner;
             Send(req);
             return JsonConvert.DeserializeObject<RoleModel_simplified>(endpoint.Recieve().StringBody);
         }
 
-        public bool AddToRole(int roleId, int CreatorId, int addedId)
+        public bool AddToRole(int roleId, int addedId, int creatorId)
         {
             var req = new QueueRequest() { method = "add_to_role" };
             req["role_id"] = roleId.ToString();
-            req["creator_id"] = CreatorId.ToString();
-            req["user_to_add_id"] = CreatorId.ToString();
+            req["creator_id"] = creatorId.ToString();
+            req["user_to_add_id"] = addedId.ToString();
             Send(req);
             return JsonConvert.DeserializeObject<bool>(endpoint.Recieve().StringBody);
         }
 
         // callerId should either == userId || creatorId
-        public bool RemoveFromRole(int roleId, int callerId, int userId)
+        public bool RemoveFromRole(int roleId, int userId, int callerId = 0)
         {
             var req = new QueueRequest() { method = "remove_from_role" };
             req["role_id"] = roleId.ToString();
@@ -122,7 +123,7 @@ namespace scaling_microservices.Proxy
             return JsonConvert.DeserializeObject<bool>(endpoint.Recieve().StringBody);
         }
 
-        public bool EditRole(int roleId, int creatorId, int newOwnerId = 0, string newName = "")
+        public RoleModel_simplified EditRole(int roleId, int creatorId, int newOwnerId = 0, string newName = "")
         {
             var req = new QueueRequest() { method = "edit_role" };
             req["role_id"] = roleId.ToString();
@@ -130,7 +131,15 @@ namespace scaling_microservices.Proxy
             req["new_owner_id"] = newOwnerId.ToString();
             req["new_name"] = newName;
             Send(req);
-            return JsonConvert.DeserializeObject<bool>(endpoint.Recieve().StringBody);
+            return JsonConvert.DeserializeObject<RoleModel_simplified>(endpoint.Recieve().StringBody);
+        }
+
+        public RoleModel_simplified GetRole(int roleId)
+        {
+            var req = new QueueRequest() { method = "get_role" };
+            req["role_id"] = roleId.ToString();
+            Send(req);
+            return JsonConvert.DeserializeObject<RoleModel_simplified>(endpoint.Recieve().StringBody);
         }
         //getrole getallroles
     }
