@@ -1,10 +1,6 @@
 ﻿using System;
 using Microsoft.AspNet.Identity;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Core.Objects;
 using System.Linq;
-using Microsoft.AspNet.Identity.EntityFramework;
 using scaling_microservices.Rabbit;
 using scaling_microservices.Auth.Tokens;
 using scaling_microservices.Identity;

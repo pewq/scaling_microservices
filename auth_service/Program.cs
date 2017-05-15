@@ -11,7 +11,7 @@ namespace auth_service
             var service = new AuthService("");
             service.LogFunction += (str) =>
             {
-                Console.Write(str);
+                Console.WriteLine(str);
             };
             Thread.Sleep(-1);
         }
