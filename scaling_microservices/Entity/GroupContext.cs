@@ -7,7 +7,9 @@ namespace scaling_microservices.Entity
 {
     public class GroupContext : DbContext
     {
-        public DbSet<GroupModel> Groups;
+        public DbSet<GroupModel_simplified> Groups;
+
+        public DbSet<RoleModel_simplified> Roles;
 
         public GroupContext() : base() { }
 

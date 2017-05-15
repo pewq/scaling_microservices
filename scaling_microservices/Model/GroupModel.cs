@@ -10,18 +10,21 @@ namespace scaling_microservices.Model
         public string Name { get; set; }
         public string Owner { get; set; }
         public UserModel Creator { get; set; }
-        public Dictionary<UserModel, List<RoleModel>> Participants { get; set; } = new Dictionary<UserModel, List<RoleModel>>();
+        public Dictionary<UserModel, HashSet<RoleModel>> Participants { get; set; } = new Dictionary<UserModel, HashSet<RoleModel>>();
 
         public GroupModel_simplified Simplify()
         {
             GroupModel_simplified model = new GroupModel_simplified()
             {
-                Id = GroupId,
+                GroupId = GroupId,
                 Name = Name,
                 Owner = Owner,
-                Creator = Creator.UserId
+                CreatorId = Creator.UserId
             };
-            model.Participants = Participants.ToDictionary(x => x.Key.UserId, x => { return x.Value.Select(v => v.RoleId).ToList(); });
+            model.Participants = Participants.ToDictionary(x => x.Key.UserId, x => {
+                var res = new HashSet<int>();
+                x.Value.Select(v => v.RoleId).ToList().ForEach(e => res.Add(e));
+                return res; });
             return model;
         }
     }

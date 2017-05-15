@@ -4,10 +4,10 @@ namespace scaling_microservices.Model
 {
     public class GroupModel_simplified
     {
-        public int Id { get; set; }
+        public int GroupId { get; set; }
         public string Name { get; set; }
         public string Owner { get; set; }
-        public int Creator { get; set; }
-        public Dictionary<int,List<int>> Participants { get; set; } = new Dictionary<int,List<int>>();
+        public int CreatorId { get; set; }
+        public Dictionary<int,HashSet<int>> Participants { get; set; } = new Dictionary<int,HashSet<int>>();
     }
 }
