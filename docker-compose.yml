@@ -1,0 +1,15 @@
+version: '2.1'
+
+services:
+  discovery_service:
+    image: discovery_service
+    build:
+      context: .\discovery_service
+      dockerfile: Dockerfile
+
+  auth_service:
+    image: auth_service
+    build:
+      context: .\auth_service
+      dockerfile: Dockerfile
+    ports:

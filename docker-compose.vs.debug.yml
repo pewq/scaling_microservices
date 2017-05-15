@@ -1,0 +1,26 @@
+version: '2.1'
+
+services:
+  discovery_service:
+    image: discovery_service:dev
+    build:
+      args:
+        source: ${DOCKER_BUILD_SOURCE}
+    volumes:
+      - .\discovery_service:C:\app
+      - ~\msvsmon:C:\msvsmon:ro
+    entrypoint: powershell -Command [System.Threading.Thread]::Sleep([System.Threading.Timeout]::Infinite)
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=windows"
+
+  auth_service:
+    image: auth_service:dev
+    build:
+      args:
+        source: ${DOCKER_BUILD_SOURCE}
+    volumes:
+      - .\auth_service:C:\app
+      - ~\msvsmon:C:\msvsmon:ro
+    entrypoint: powershell -Command [System.Threading.Thread]::Sleep([System.Threading.Timeout]::Infinite)
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=windows"

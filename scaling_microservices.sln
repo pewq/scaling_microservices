@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scaling_microservices", "scaling_microservices\scaling_microservices.csproj", "{B5D6FDE9-7B80-48E3-A687-F47667D0D053}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_project", "test_project\test_project.csproj", "{FCE2A929-B125-44FD-AE4E-EDD708BE7174}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "group_service", "group_service\group_service.csproj", "{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{476A554A-C78B-432F-B49C-A3A69A577397}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -136,6 +138,24 @@ Global
 		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Release|x64.Build.0 = Release|Any CPU
 		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Release|x86.ActiveCfg = Release|Any CPU
 		{373CE7FD-2C8C-42AA-ABA4-61F202D2675E}.Release|x86.Build.0 = Release|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug wo Controller|Any CPU.ActiveCfg = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug wo Controller|Any CPU.Build.0 = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug wo Controller|x64.ActiveCfg = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug wo Controller|x64.Build.0 = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug wo Controller|x86.ActiveCfg = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug wo Controller|x86.Build.0 = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug|x64.Build.0 = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Debug|x86.Build.0 = Debug|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Release|Any CPU.Build.0 = Release|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Release|x64.ActiveCfg = Release|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Release|x64.Build.0 = Release|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Release|x86.ActiveCfg = Release|Any CPU
+		{476A554A-C78B-432F-B49C-A3A69A577397}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
