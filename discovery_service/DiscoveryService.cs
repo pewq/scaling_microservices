@@ -19,7 +19,10 @@ namespace discovery_service
     {
         const int statusOK = 200;
 
-        private ServiceRegistry registry;
+        private ServiceRegistry registry { get; set; }
+
+        private string BroadcastExchange = "disc_fanout_exchange";
+        private EventingEndpoint broadcastEndpoint;
 
         public DiscoveryService(string queueName) : base(queueName)
         {
@@ -41,15 +44,32 @@ namespace discovery_service
         }
 
         public int Port { get; private set; }
-        public static DiscoveryService Instance { get; private set; }
+        //public static DiscoveryService Instance { get; private set; }
         public const string QueueName = "DiscoveryCommandQueue";
         static DiscoveryService()
         {
-            Instance = new DiscoveryService(QueueName);
+            //Instance = new DiscoveryService(QueueName);
         }
 
         private void ThisInit()
         {
+            this.broadcastEndpoint = new EventingEndpoint();
+            broadcastEndpoint.ExchangeExistsOrDeclare(BroadcastExchange, "fanout");
+            //bind endpoint.Queue to echange
+            broadcastEndpoint.Bind(BroadcastExchange, "");
+            broadcastEndpoint.OnRecieved += (obj, message) => {
+                if (message.Properties.ReplyTo == endpoint.InQueue || message.Properties.ReplyTo == broadcastEndpoint.InQueue)
+                {
+                    return;
+                }
+                if (message.Encoding == QueueRequest.classname)
+                {
+                    QueueRequest req = new QueueRequest(message.body, message.Properties);
+                    base.ProcessRequest(req);
+                }
+            };
+
+
             this.Handlers.Add("ping", (RequestHandleDelegate)pingHandler);
             this.Handlers.Add("register", (RequestHandleDelegate)registerHandler);
             this.Handlers.Add("get_services", (RequestHandleDelegate)getServicesHandler);
@@ -75,7 +95,7 @@ namespace discovery_service
                 string token = req["token"];
                 if (registry.Ping(name, token))
                 { 
-                    OnResponse(req.properties, new { status = System.Net.HttpStatusCode.OK });
+                    OnResponseWBCast(req.properties, new { status = System.Net.HttpStatusCode.OK }, req);
                 }
                 else
                 {
@@ -100,7 +120,7 @@ namespace discovery_service
 
                 registry.Add(name, address, token, type, owner);
 
-                OnResponse(req.properties, new { status = statusOK });
+                OnResponseWBCast(req.properties, new { status = statusOK }, req);
             }
             catch (Exception e)
             {
@@ -180,6 +200,11 @@ namespace discovery_service
                 OnException(e, req);
             }
         }
+
+        private void broadcastDiscoveryHandler(QueueRequest req)
+        {
+
+        }
         #endregion
 
         #region OnException
@@ -190,6 +215,12 @@ namespace discovery_service
         }
 
         #endregion
+
+        protected void OnResponseWBCast(RabbitMQ.Client.IBasicProperties props, object response, QueueRequest bcastRequest)
+        {
+            endpoint.SendTo(bcastRequest, "", BroadcastExchange);
+            base.OnResponse(props, response);
+        }
     }
 }
 //TODO: controller should send it's address on register;

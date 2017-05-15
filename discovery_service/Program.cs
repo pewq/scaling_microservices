@@ -1,4 +1,6 @@
 ﻿using System;
+using Owin;
+using System.Web.Http;
 using Microsoft.Owin.Hosting;
 
 namespace discovery_service
@@ -7,18 +9,40 @@ namespace discovery_service
     {
         static void Main(string[] args)
         {
-            DiscoveryService.Instance.GetType();
+            var service = new DiscoveryService(DiscoveryService.QueueName);
+            service.LogFunction += (str) =>
+            {
+                Console.WriteLine(str);
+            };
             var options = new StartOptions()
             {
-                Port = 5133,
+                Port = new Random().Next(5000, 5000 + 300)
             };
-            options.Settings.Add("service_queue", DiscoveryService.QueueName);//wtf?
-            //change this to non-generic version
-            //add registering to service
-            using (WebApp.Start<Startup>(options))
+            if (args.Length > 0)
             {
+                using (WebApp.Start(options, (appBuilder) =>
+                {
+                    HttpConfiguration config = new HttpConfiguration();
+                    config.Routes.MapHttpRoute(
+                        name: "DefaultApi",
+                        routeTemplate: "api/{controller}/{action}/{id}",
+                        defaults: new { id = RouteParameter.Optional }
+                    );
 
-                Console.WriteLine("press enter");
+                    dynamic property = appBuilder.Properties["host.Addresses"];
+                    string port = property[0]["port"];
+                    Console.WriteLine(port);
+                    appBuilder.UseWebApi(config);
+                }))
+                {
+                    DiscoveryController.HasController = true;
+                    Console.WriteLine("press enter");
+                    Console.ReadLine();
+                    DiscoveryController.HasController = false;
+                }
+            }
+            else
+            {
                 Console.ReadLine();
             }
         }

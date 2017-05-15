@@ -9,6 +9,7 @@ namespace discovery_service
 {
     public class DiscoveryController : ApiController
     {
+        public static bool HasController = false;
         SubscriptionEndpoint endpoint;
         DiscoveryController()
         {
